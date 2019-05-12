@@ -1,6 +1,7 @@
 #ifndef SERVERSOCKET_H
 #define SERVERSOCKET_H
 
+#include <arpa/inet.h>
 #include <iostream>
 #include <netinet/in.h>
 #include <netdb.h>
@@ -18,9 +19,10 @@ public:
     virtual ~ServerSocket() override;
     void listen();
     void accept();
+    void sendToAll(const char* t_buffer, size_t length);
 private:
     struct sockaddr_in m_server;
-    std::vector<int> m_clients;
+    std::vector<Socket> m_clients;
 };
 
 } // namespace Communication

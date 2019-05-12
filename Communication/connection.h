@@ -9,9 +9,11 @@ namespace Communication {
 class Connection
 {
 public:
-    Connection(std::string t_ipAddress,
-               unsigned short t_serverPort,
+    Connection(std::string t_serverAddress,
+               std::string t_serverPort,
                char t_ipVersion);
+    void send(const std::string t_message) const;
+    void receive() const;
 private:
     ClientSocket m_socket;
 

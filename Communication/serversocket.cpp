@@ -9,7 +9,7 @@ ServerSocket::ServerSocket(unsigned short t_port) : Socket() {
     int bind;
     m_server.sin_family = AF_INET;
     m_server.sin_addr.s_addr = INADDR_ANY;
-    m_server.sin_port = static_cast<in_port_t>(::htons(t_port));
+    m_server.sin_port = static_cast<in_port_t>(htons(t_port));
 
     bind = ::bind(getSocketFD(), reinterpret_cast<struct sockaddr*>(&m_server), sizeof m_server);
 
@@ -49,19 +49,27 @@ void ServerSocket::accept() {
 
     newConnectionFD = ::accept(getSocketFD(), reinterpret_cast<struct sockaddr*>(&their_addr), reinterpret_cast<socklen_t*>(&addrSize));
 
+    // todo: check who has connected
+
     if(newConnectionFD == -1) {
         switch (errno) {
         case EINVAL : throw std::runtime_error("Socket is not listening for connections");
-        case  ECONNABORTED : throw std::runtime_error("Connection aborted");
+        case ECONNABORTED : throw std::runtime_error("Connection aborted");
         case ENOTSOCK : throw std::runtime_error("Sock FD does not refer to socket");
         case EPROTO : throw std::runtime_error("Protocol error");
         }
     }
-    m_clients.push_back(newConnectionFD);
+    std::cout << newConnectionFD <<" connected\n";
+    m_clients.emplace_back(newConnectionFD);
 
     //std::string str("Hello Client!");
     //std::cout << "SENT BYTES: " << ::send(newClientFD, str.c_str(), str.length(), 0);
 
+}
+void ServerSocket::sendToAll(const char* t_buffer, size_t t_length) {
+    for(auto& client : m_clients) {
+        client.send(t_buffer, t_length);
+    }
 }
 
 
