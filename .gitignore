@@ -1,2 +1,5 @@
-*.user
+*pro.user
 *.o
+*.stash
+Makefile
+*.out
