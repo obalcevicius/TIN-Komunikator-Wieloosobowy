@@ -51,7 +51,6 @@ void ServerSocket::accept() {
     newConnectionFD = ::accept(getSocketFD(), reinterpret_cast<struct sockaddr*>(&their_addr), reinterpret_cast<socklen_t*>(&addrSize));
 
     // todo: check who has connected
-    std::cout << "[" <<newConnectionFD << "]connected\n";
     if(newConnectionFD == -1) {
         switch (errno) {
         case EINVAL : throw std::runtime_error("Socket is not listening for connections");
@@ -60,12 +59,10 @@ void ServerSocket::accept() {
         case EPROTO : throw std::runtime_error("Protocol error");
         }
     }
-    std::cout << "[" <<newConnectionFD << "]connected\n";
     m_clients.emplace_back(newConnectionFD);
 }
 void ServerSocket::sendToAll(const char* t_buffer, size_t t_length) {
     for(auto& client : m_clients) {
-        std::cout << client.getSocketFD() << std::endl;
         client.send(t_buffer, t_length);
     }
 }
