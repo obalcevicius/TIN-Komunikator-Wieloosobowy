@@ -11,6 +11,4 @@ Connection::Connection(std::string t_serverAddress, std::string t_serverPort, ch
 
 
 
-
-
 } // namespace Communication

@@ -30,7 +30,7 @@ ServerSocket::~ServerSocket() {
 
 void ServerSocket::listen() {
     int listen;
-    listen = ::listen(getSocketFD(), 5);
+    listen = ::listen(getSocketFD(), 10);
     if(listen == -1) {
         switch (errno) {
         case EADDRINUSE: throw std::runtime_error("Another socket is listening on this port");
@@ -61,10 +61,6 @@ void ServerSocket::accept() {
     }
     std::cout << newConnectionFD <<" connected\n";
     m_clients.emplace_back(newConnectionFD);
-
-    //std::string str("Hello Client!");
-    //std::cout << "SENT BYTES: " << ::send(newClientFD, str.c_str(), str.length(), 0);
-
 }
 void ServerSocket::sendToAll(const char* t_buffer, size_t t_length) {
     for(auto& client : m_clients) {

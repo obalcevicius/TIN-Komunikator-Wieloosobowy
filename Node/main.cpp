@@ -1,11 +1,14 @@
 #include <cstdlib>
 #include <iostream>
 #include <memory>
-#include <thread>
-#include <chrono>
+#include <sstream>
+
 #include "connection.h"
 #include "clientsocket.h"
+#include "commandmessage.h"
 #include "serversocket.h"
+
+
 
 
 int main(int argc, char* argv[]) {
@@ -16,25 +19,24 @@ int main(int argc, char* argv[]) {
     if(*argv[1] == 'S') {
         Communication::ServerSocket serverSock(atoi(argv[2]));
         serverSock.listen();
-        serverSock.accept();//serverSock.accept();//serverSock.accept();
-        std::string msg;
-        std::cin >> msg;
-        serverSock.sendToAll(msg.c_str(), msg.length());
+        serverSock.accept();
+
+        Communication::CommandMessage msg("SENDING NEW COMMAND MESSAGE\n");
+        std::stringstream serializer;
+        msg.serialize(serializer);
+        serverSock.sendToAll(serializer.str().data(), serializer.str().length());
 
     }
     else if(*argv[1] == 'C') {
         Communication::ClientSocket clientSock;
         clientSock.connect("localhost", std::string(argv[2]));
-        std::this_thread::sleep_for(std::chrono::seconds(5));
-        auto msg = std::unique_ptr<char>(new char[20]);
-        msg.get()[19] = '\0';
-        clientSock.receive(msg.get(), 19);
-        clientSock.receive(msg.get(), 19);
+        auto msg = std::unique_ptr<char>(new char[128]);
+        msg.get()[127] = '\0';
+        clientSock.receive(msg.get(), 128);
+
         std::cout << std::string(msg.get()) << std::endl;
-
-
-
     }
+
 
 
 

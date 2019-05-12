@@ -11,7 +11,6 @@ Socket::Socket() {
     if(m_sockfd == -1) {
         throw std::runtime_error("Couldn't create socket");
     }
-    std::cout << "new socket created: " << m_sockfd << std::endl;
 }
 Socket::Socket(int t_sockfd) : m_sockfd(t_sockfd) {
 
@@ -33,7 +32,6 @@ void Socket::send(const char* t_buffer, size_t t_length) {
         if(sValue == -1 ) {
             throw std::runtime_error("Couln't send message");
         }
-        std::cout << sValue << " bytes Sent\n";
         offset += static_cast<unsigned long>(sValue);
     }
 }
@@ -42,6 +40,7 @@ void Socket::receive(char* t_buffer, size_t t_length) {
     long bytesRead = ::recv(getSocketFD(),t_buffer, t_length, 0);
     std::cout << "read " << bytesRead << "bytes\n";
     if(bytesRead == -1) {
+        std::cout << errno;
         throw std::runtime_error("Couln't read message");
     }
 }

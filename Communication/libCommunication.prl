@@ -1,6 +1,0 @@
-QMAKE_PRL_BUILD_DIR = /home/obalcevicius/tin/TIN-Komunikator-Wieloosobowy/Communication
-QMAKE_PRO_INPUT = Communication.pro
-QMAKE_PRL_TARGET = libCommunication.a
-QMAKE_PRL_CONFIG = lex yacc exceptions depend_includepath testcase_targets import_qpa_plugin file_copies qmake_use qt warn_on release link_prl incremental release linux unix posix gcc staticlib c++11 create_prl link_prl have_target static staticlib thread
-QMAKE_PRL_VERSION = 1.0.0
-QMAKE_PRL_LIBS = -lpthread

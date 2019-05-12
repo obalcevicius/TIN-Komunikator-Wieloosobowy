@@ -11,15 +11,19 @@ CONFIG += create_prl link_prl
 
 SOURCES += \
         clientsocket.cpp \
-        communication.cpp \
+        commandmessage.cpp \
         connection.cpp \
+        constants.cpp \
+        message.cpp \
         serversocket.cpp \
         socket.cpp
 
 HEADERS += \
         clientsocket.h \
-        communication.h \
+        commandmessage.h \
         connection.h \
+        constants.h \
+        message.h \
         serversocket.h \
         socket.h
 unix {
