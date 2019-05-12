@@ -39,7 +39,6 @@ void Socket::send(const char* t_buffer, size_t t_length) {
 void Socket::receive(char* t_buffer, size_t t_length) {
     long bytesRead = ::recv(getSocketFD(),t_buffer, t_length, 0);
     if(bytesRead == -1) {
-        std::cout << errno;
         throw std::runtime_error("Couln't read message");
     }
 }

@@ -6,7 +6,7 @@
 #include <netinet/in.h>
 #include <netdb.h>
 #include <string>
-#include <vector>
+#include <deque>
 
 #include "socket.h"
 
@@ -22,7 +22,7 @@ public:
     void sendToAll(const char* t_buffer, size_t length);
 private:
     struct sockaddr_in m_server;
-    std::vector<Socket> m_clients;
+    std::deque<Socket> m_clients;
 };
 
 } // namespace Communication

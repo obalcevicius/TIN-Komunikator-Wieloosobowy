@@ -12,10 +12,12 @@ namespace Communication {
 class CommandMessage : public Message
 {
 public:
+    CommandMessage();
     CommandMessage(std::string t_command);
 
     virtual int getHeader() const override;
     virtual void serialize(std::ostream& t_ostream) const override;
+    virtual void deserialize(std::istream& t_istream) override;
     std::string getCommand() const;
     virtual ~CommandMessage() override;
 private:

@@ -13,6 +13,7 @@ public:
 
     virtual int getHeader() const = 0;
     virtual void serialize(std::ostream& t_ostream) const = 0;
+    virtual void deserialize(std::istream& t_istream) = 0;
 
     virtual ~Message();
 };

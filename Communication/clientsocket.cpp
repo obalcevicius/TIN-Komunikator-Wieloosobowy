@@ -23,7 +23,6 @@ void ClientSocket::connect(std::string t_serverAddress, std::string t_serverPort
     hints.ai_socktype = SOCK_STREAM;
 
     getaddrinfo(t_serverAddress.c_str(), t_serverPort.c_str(), &hints, &res);
-
     connection = ::connect(getSocketFD(), res->ai_addr, res->ai_addrlen);
     if(connection == -1) {
         switch (errno) {
@@ -34,7 +33,7 @@ void ClientSocket::connect(std::string t_serverAddress, std::string t_serverPort
         }
     }
     else {
-        std::cout << " Connection established";
+        std::cout << " Connection established" << std::endl;
     }
 }
 

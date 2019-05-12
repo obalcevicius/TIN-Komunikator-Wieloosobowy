@@ -22,7 +22,7 @@ int main(int argc, char* argv[]) {
     if(*argv[1] == 'S') {
         Communication::ServerSocket serverSock(atoi(argv[2]));
         serverSock.listen();
-        serverSock.accept();
+        serverSock.accept(); serverSock.accept();
         std::string command;
         std::cout << "Please enter commands to send to client. Enter '0' to quit" << std::endl;
         do {
@@ -33,12 +33,8 @@ int main(int argc, char* argv[]) {
             serverSock.sendToAll(serializer.str().data(), serializer.str().length());
         }
         while(command != "0");
-
-
-
-
-
     }
+
     else if(*argv[1] == 'C') {
         Communication::ClientSocket clientSock;
         clientSock.connect("localhost", std::string(argv[2]));
@@ -47,10 +43,12 @@ int main(int argc, char* argv[]) {
             std::memset(msg.get(), 0, 128);
             clientSock.receive(msg.get(), 128);
             msg.get()[127] = '\0';
+
             std::cout << std::string(msg.get()) << std::endl;
         }
         while(msg.get()[1] != '0');
     }
+
 
 
 
