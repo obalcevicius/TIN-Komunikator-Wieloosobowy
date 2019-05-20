@@ -30,6 +30,7 @@ int main(int argc, char* argv[]) {
             Communication::CommandMessage msg(command);
             std::stringstream serializer;
             msg.serialize(serializer);
+
             serverSock.sendToAll(serializer.str().data(), serializer.str().length());
         }
         while(command != "0");

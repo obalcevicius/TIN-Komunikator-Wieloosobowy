@@ -5,6 +5,9 @@
 
 namespace Communication {
 
+/**
+ * @brief DataMessage is used to send data between group members
+ */
 class DataMessage : public Message
 {
 public:

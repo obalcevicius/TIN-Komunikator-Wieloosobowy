@@ -8,7 +8,9 @@
 
 namespace Communication {
 
-
+/**
+ * @brief Message used to organise system
+ */
 class CommandMessage : public Message
 {
 public:
@@ -18,6 +20,10 @@ public:
     virtual int getHeader() const override;
     virtual void serialize(std::ostream& t_ostream) const override;
     virtual void deserialize(std::istream& t_istream) override;
+    /**
+     * @brief Getter for command
+     * @return command of the message
+     */
     std::string getCommand() const;
     virtual ~CommandMessage() override;
 private:
