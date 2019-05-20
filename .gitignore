@@ -3,3 +3,4 @@
 *.stash
 Makefile
 *.out
+*.autosave
