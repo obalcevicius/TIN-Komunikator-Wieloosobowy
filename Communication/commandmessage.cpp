@@ -23,7 +23,7 @@ void CommandMessage::serialize(std::ostream &t_ostream) const {
     t_ostream << m_command;
 }
 void CommandMessage::deserialize(std::istream &t_istream) {
-
+    std::getline(t_istream, m_command);
 }
 
 CommandMessage::~CommandMessage() {

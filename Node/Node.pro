@@ -8,6 +8,10 @@ SOURCES += \
         main.cpp
 
 
+HEADERS += \
+
+
+
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../Communication/release/ -lCommunication
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../Communication/debug/ -lCommunication

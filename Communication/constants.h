@@ -3,7 +3,9 @@
 
 
 namespace Communication {
-
+/**
+ * @brief Class contains definitions for constants
+ */
 class Constants
 {
 public:

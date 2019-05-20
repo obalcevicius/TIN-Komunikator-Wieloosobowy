@@ -14,18 +14,26 @@ SOURCES += \
         commandmessage.cpp \
         connection.cpp \
         constants.cpp \
+        datamessage.cpp \
+        echomessage.cpp \
         message.cpp \
         serversocket.cpp \
-        socket.cpp
+        socket.cpp \
+        subscriptionmessage.cpp \
+        tokenmessage.cpp
 
 HEADERS += \
         clientsocket.h \
         commandmessage.h \
         connection.h \
         constants.h \
+        datamessage.h \
+        echomessage.h \
         message.h \
         serversocket.h \
-        socket.h
+        socket.h \
+        subscriptionmessage.h \
+        tokenmessage.h
 unix {
     target.path = /usr/lib
     INSTALLS += target
