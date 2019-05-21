@@ -4,3 +4,6 @@
 Makefile
 *.out
 *.autosave
+Node
+*.a
+*.prl
