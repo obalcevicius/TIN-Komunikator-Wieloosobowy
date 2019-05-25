@@ -18,9 +18,9 @@ class Node {
 		NodeInfo * second = node.copy(); //je trzeba kopiować
 		MapType * map = new map;
 		(*map)["node"] = second;
-		spawned.push_back(new NodeThread(this, internalJoin, map));
+		spawned.push_back(new NodeThread(this, &internalJoin, map));
 	}
 	void internalJoin(MapType * map) {
 		NodeInfo * node = (NodeInfo *) (*map)["node"];
-		
+		AddMeMessage mess(me, "join");
 	
