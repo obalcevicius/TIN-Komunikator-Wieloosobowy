@@ -14,9 +14,11 @@ ClientSocket::ClientSocket() : Socket() {
 
 }
 
-void ClientSocket::connect(std::string t_serverAddress, std::string t_serverPort) {
+void ClientSocket::connect(NodeInfo node) {
     struct addrinfo hints, *res;
     int connection;
+    string t_serverAddress = node.getAddress();
+    string t_serverPort = node.getPort();
     std::memset(&hints, 0, sizeof hints);
 
     hints.ai_family = AF_UNSPEC;
