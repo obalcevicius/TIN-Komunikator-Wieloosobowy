@@ -57,11 +57,12 @@ std::unique_ptr<PlainMessage> Socket::readMessage() {
     auto headerInfo = std::unique_ptr<char>(new char[9]);
     receive(headerInfo.get(), 8);
     headerInfo.get()[8] = '\0';
-    unsigned long int hVAL = strtoul(headerInfo.get(), NULL, 16);
-    std::cout << "BYTES TO READ " << ntohl(hVAL) << std::endl;
-    auto msg_body = std::unique_ptr<char>(new char[ntohl(hVAL) +1 ]);
-    msg_body.get()[ntohl(hVAL)] = '\0';
-    receive(msg_body.get(), ntohl(hVAL));
+    unsigned long int messageLength = strtoul(headerInfo.get(), NULL, 16);
+    messageLength = ntohl(messageLength);
+
+    auto msg_body = std::unique_ptr<char>(new char[messageLength +1 ]);
+    msg_body.get()[messageLength] = '\0';
+    receive(msg_body.get(), messageLength);
     auto msgBody = std::unique_ptr<PlainMessage>( new PlainMessage(std::move(msg_body)));
     return msgBody;
 

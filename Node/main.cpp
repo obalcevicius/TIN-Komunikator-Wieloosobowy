@@ -49,8 +49,6 @@ int main(int argc, char* argv[]) {
                 break;
             }
             Communication::CommandMessage msg(command);
-
-
             myNode.broadcastMessage(msg.serialize());
 
         }
@@ -62,8 +60,7 @@ int main(int argc, char* argv[]) {
         clientSock.connect("localhost", std::string(argv[2]));
         auto msg = std::unique_ptr<char>(new char[128]);
         do {
-            //std::memset(msg.get(), 0, 128);
-            //clientSock.receive(msg.get(), 128);
+
             auto msg = clientSock.readMessage();
             std::string str (msg->getMessage());
             std::stringstream ss(str);
@@ -71,12 +68,10 @@ int main(int argc, char* argv[]) {
             int num;
             unsigned int header;
             ss>>header;
-            ss>>num;ss>>command;
+            ss>>command;
+            ss>>num;
 
             std::cout <<"MESSAGE: " << header << " " << command <<" " << num << std::endl;
-            //msg.get()[127] = '\0';
-
-            //std::cout << std::string(msg.get()) << std::endl;
         }
         while(msg.get()[1] != '0');
     }

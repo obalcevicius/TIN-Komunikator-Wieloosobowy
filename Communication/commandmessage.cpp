@@ -31,8 +31,9 @@ PlainMessage CommandMessage::serialize() const {
     std::stringstream sstream;
     std::stringstream msg;
     sstream << getHeader();
-    sstream << m_info;
+
     sstream << m_command;
+    sstream << m_info;
 
 
     msg << std::hex << std::setw(8) << std::setfill('0') << htonl(sstream.str().size());
