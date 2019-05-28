@@ -16,6 +16,7 @@ SOURCES += \
         datamessage.cpp \
         echomessage.cpp \
         message.cpp \
+        plainmessage.cpp \
         serversocket.cpp \
         socket.cpp \
         subscriptionmessage.cpp \
@@ -28,6 +29,7 @@ HEADERS += \
         datamessage.h \
         echomessage.h \
         message.h \
+        plainmessage.h \
         serversocket.h \
         socket.h \
         subscriptionmessage.h \

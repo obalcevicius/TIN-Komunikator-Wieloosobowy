@@ -15,10 +15,10 @@ class CommandMessage : public Message
 {
 public:
     CommandMessage();
-    CommandMessage(std::string t_command);
+    CommandMessage(std::string t_command, int t_info = 0);
 
     virtual int getHeader() const override;
-    virtual void serialize(std::ostream& t_ostream) const override;
+    virtual PlainMessage serialize() const override;
     virtual void deserialize(std::istream& t_istream) override;
     /**
      * @brief Getter for command
@@ -28,6 +28,7 @@ public:
     virtual ~CommandMessage() override;
 private:
     std::string m_command;
+    int m_info;
 };
 
 } // namespace Communication
