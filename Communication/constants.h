@@ -10,6 +10,10 @@ class Constants
 {
 public:
     static constexpr int commandMessageHeader = 1;
+    enum class ipVersion {
+        IPv4,
+        IPv6
+    };
 
 private:
     Constants();

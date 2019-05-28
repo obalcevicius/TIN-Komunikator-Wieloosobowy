@@ -5,6 +5,8 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
+#include "constants.h"
+
 namespace Communication {
 /**
  * @brief Socket wrapper class
@@ -17,7 +19,7 @@ public:
     /**
      * @brief Initializes and open socket
      */
-    Socket();
+    Socket(Constants::ipVersion t_ipVersion);
     Socket(int t_sockfd);
     virtual ~Socket();
     Socket& operator=(const Socket&) = delete;

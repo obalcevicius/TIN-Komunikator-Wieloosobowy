@@ -1,18 +1,24 @@
 #include <cstdlib>
 #include <cstring>
+#include <chrono>
 #include <iostream>
 #include <memory>
 #include <sstream>
+#include <thread>
 
-#include "connection.h"
 #include "clientsocket.h"
+#include "constants.h"
 #include "commandmessage.h"
+#include "node.h"
 #include "serversocket.h"
 
 
 
 
 int main(int argc, char* argv[]) {
+
+    std::this_thread::sleep_for(std::chrono::seconds(2));
+
     for(int i = 0; i < argc; ++i) {
         std::cout << argv[i] << std::endl;
     }
@@ -20,7 +26,8 @@ int main(int argc, char* argv[]) {
         return 0;
     }
     if(*argv[1] == 'S') {
-        Communication::ServerSocket serverSock(atoi(argv[2]));
+
+        Communication::ServerSocket serverSock(Communication::Constants::ipVersion::IPv6, static_cast<unsigned short>(std::stoul(argv[2])));
         serverSock.listen();
         serverSock.accept();
         std::string command;
@@ -37,7 +44,7 @@ int main(int argc, char* argv[]) {
     }
 
     else if(*argv[1] == 'C') {
-        Communication::ClientSocket clientSock;
+        Communication::ClientSocket clientSock(Communication::Constants::ipVersion::IPv6);
         clientSock.connect("localhost", std::string(argv[2]));
         auto msg = std::unique_ptr<char>(new char[128]);
         do {

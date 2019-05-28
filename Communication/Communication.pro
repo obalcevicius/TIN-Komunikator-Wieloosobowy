@@ -12,7 +12,6 @@ CONFIG += create_prl link_prl
 SOURCES += \
         clientsocket.cpp \
         commandmessage.cpp \
-        connection.cpp \
         constants.cpp \
         datamessage.cpp \
         echomessage.cpp \
@@ -25,7 +24,6 @@ SOURCES += \
 HEADERS += \
         clientsocket.h \
         commandmessage.h \
-        connection.h \
         constants.h \
         datamessage.h \
         echomessage.h \

@@ -5,10 +5,16 @@ CONFIG -= qt
 CONFIG += link_prl
 
 SOURCES += \
-        main.cpp
+        main.cpp \
+        node.cpp \
+        nodegroup.cpp \
+        nodeinfo.cpp
 
 
-HEADERS += \
+HEADERS += \ \
+    node.h \
+    nodegroup.h \
+    nodeinfo.h
 
 
 

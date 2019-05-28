@@ -1,13 +1,22 @@
 #include <iostream>
 #include <exception>
 
+#include "constants.h"
 #include "socket.h"
 
 
 namespace Communication {
 
-Socket::Socket() {
-    m_sockfd = socket(AF_INET, SOCK_STREAM, 0);
+Socket::Socket(Constants::ipVersion t_ipVersion) {
+    if(t_ipVersion == Constants::ipVersion::IPv4) {
+        std::cout << "CREATING IPv4 SOCKET\n";
+        m_sockfd = socket(PF_INET, SOCK_STREAM, 0);
+    }
+    else if(t_ipVersion == Constants::ipVersion::IPv6) {
+         std::cout << "CREATING IPv6 SOCKET\n";
+        m_sockfd = socket(PF_INET6, SOCK_STREAM, 0);
+    }
+
     if(m_sockfd == -1) {
         throw std::runtime_error("Couldn't create socket");
     }
