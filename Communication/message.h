@@ -3,6 +3,7 @@
 
 #include <sstream>
 
+#include "plainmessage.h"
 namespace Communication {
 
 
@@ -22,7 +23,7 @@ public:
      * @brief Serializes message to output stream, all derived classes override this method
      * @param t_ostream Stream to serialize data to
      */
-    virtual void serialize(std::ostream& t_ostream) const = 0;
+    virtual PlainMessage serialize() const = 0;
 
     /**
      * @brief Deserialized message from output stream, all derived classes override this method

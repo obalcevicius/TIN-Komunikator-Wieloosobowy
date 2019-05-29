@@ -12,11 +12,11 @@ CONFIG += create_prl link_prl
 SOURCES += \
         clientsocket.cpp \
         commandmessage.cpp \
-        connection.cpp \
         constants.cpp \
         datamessage.cpp \
         echomessage.cpp \
         message.cpp \
+        plainmessage.cpp \
         serversocket.cpp \
         socket.cpp \
         subscriptionmessage.cpp \
@@ -25,11 +25,11 @@ SOURCES += \
 HEADERS += \
         clientsocket.h \
         commandmessage.h \
-        connection.h \
         constants.h \
         datamessage.h \
         echomessage.h \
         message.h \
+        plainmessage.h \
         serversocket.h \
         socket.h \
         subscriptionmessage.h \

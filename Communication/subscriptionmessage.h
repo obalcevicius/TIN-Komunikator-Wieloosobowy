@@ -14,7 +14,7 @@ public:
     SubscriptionMessage();
 
     virtual int getHeader() const override;
-    virtual void serialize(std::ostream& t_ostream) const override;
+    virtual PlainMessage serialize() const override;
     virtual void deserialize(std::istream& t_istream) override;
 
     virtual ~SubscriptionMessage() override;

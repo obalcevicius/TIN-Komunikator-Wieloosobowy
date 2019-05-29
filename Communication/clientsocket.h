@@ -3,9 +3,9 @@
 
 #include <netinet/in.h>
 #include <netdb.h>
-
 #include <string>
 
+#include "constants.h"
 #include "socket.h"
 
 namespace Communication {
@@ -16,7 +16,7 @@ namespace Communication {
 class ClientSocket : public Socket
 {
 public:
-    ClientSocket();
+    ClientSocket(Constants::ipVersion t_ipVersion);
     ~ClientSocket() override;
     /**
      * @brief Connects to specified server
@@ -25,6 +25,7 @@ public:
      */
     void connect(std::string t_ipAddress, std::string t_port);
 private:
+    Constants::ipVersion m_ipVersion;
     struct sockaddr_in m_server;
 
 };
