@@ -1,18 +1,30 @@
-#include "serversocket.h"
 #include <errno.h>
-#include <string.h>
+#include <cstring>
 #include <chrono>
 #include <thread>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+
+#include "constants.h"
+#include "serversocket.h"
 namespace Communication {
 
-ServerSocket::ServerSocket(unsigned short t_port) : Socket() {
+ServerSocket::ServerSocket(Constants::ipVersion t_ipVersion, unsigned short t_port) : Socket(t_ipVersion) {
     int bind;
+    struct addrinfo hints, *res;
+    memset(&hints, 0, sizeof hints);
+    if(t_ipVersion == Constants::ipVersion::IPv4) {
+        hints.ai_family = AF_INET;
+    }
+    else if(t_ipVersion == Constants::ipVersion::IPv6) {
+        hints.ai_family = AF_INET6;
+    }
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_flags = AI_PASSIVE;
 
-    m_server.sin_family = AF_INET;
-    m_server.sin_addr.s_addr = INADDR_ANY;
-    m_server.sin_port = static_cast<in_port_t>(htons(t_port));
+    getaddrinfo(NULL, std::to_string(t_port).c_str() , &hints, &res); // change NULL to specific address if required, drop AI_PASSIVE FLAG above
 
-    bind = ::bind(getSocketFD(), reinterpret_cast<struct sockaddr*>(&m_server), sizeof m_server);
+    bind = ::bind(getSocketFD(), res->ai_addr, res->ai_addrlen);
 
     if(bind == -1) {
         switch (errno) {
@@ -50,7 +62,7 @@ void ServerSocket::accept() {
 
     newConnectionFD = ::accept(getSocketFD(), reinterpret_cast<struct sockaddr*>(&their_addr), reinterpret_cast<socklen_t*>(&addrSize));
 
-    // todo: check who has connected
+
     if(newConnectionFD == -1) {
         switch (errno) {
         case EINVAL : throw std::runtime_error("Socket is not listening for connections");
@@ -59,11 +71,22 @@ void ServerSocket::accept() {
         case EPROTO : throw std::runtime_error("Protocol error");
         }
     }
-    m_clients.emplace_back(newConnectionFD);
+    // todo: check who has connected
+    if(their_addr.ss_family == AF_INET) {
+        char addr[INET_ADDRSTRLEN];
+        std::cout << "CONNECTED : " << inet_ntop(AF_INET, &reinterpret_cast<struct sockaddr_in*>(&their_addr)->sin_addr, addr, INET_ADDRSTRLEN) << std::endl;
+        std::cout << "CONNECTED : " << ntohs(reinterpret_cast<struct sockaddr_in*>(&their_addr)->sin_port) << std::endl;
+    }
+    else if (their_addr.ss_family == AF_INET6) {
+        char addr[INET6_ADDRSTRLEN];
+        std::cout << "CONNECTED : " << inet_ntop(AF_INET6, &reinterpret_cast<struct sockaddr_in6*>(&their_addr)->sin6_addr, addr, INET6_ADDRSTRLEN) << std::endl;
+        std::cout << "CONNECTED : " << ntohs(reinterpret_cast<struct sockaddr_in6*>(&their_addr)->sin6_port) << std::endl;
+    }
+    m_clients.push_back(std::unique_ptr<Socket>(new Socket(newConnectionFD)));
 }
 void ServerSocket::sendToAll(const char* t_buffer, size_t t_length) {
     for(auto& client : m_clients) {
-        client.send(t_buffer, t_length);
+        client->send(t_buffer, t_length);
     }
 }
 

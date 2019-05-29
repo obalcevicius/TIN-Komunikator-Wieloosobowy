@@ -1,10 +1,13 @@
 #ifndef SOCKET_H
 #define SOCKET_H
 
+#include <memory>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <unistd.h>
 
+#include "constants.h"
+#include "plainmessage.h"
 namespace Communication {
 /**
  * @brief Socket wrapper class
@@ -17,7 +20,7 @@ public:
     /**
      * @brief Initializes and open socket
      */
-    Socket();
+    Socket(Constants::ipVersion t_ipVersion);
     Socket(int t_sockfd);
     virtual ~Socket();
     Socket& operator=(const Socket&) = delete;
@@ -35,6 +38,7 @@ public:
      * @param t_length Length of data to read
      */
     void receive(char* t_buffer, size_t t_length);
+    std::unique_ptr<PlainMessage> readMessage();
 
     /**
      * @brief Closes socket

@@ -6,11 +6,16 @@
 #include <thread>
 #include <iostream>
 #include <memory>
+#include <cstring>
 #include <unistd.h>
+
+#include "constants.h"
 
 namespace Communication {
 
-ClientSocket::ClientSocket() : Socket() {
+ClientSocket::ClientSocket(Constants::ipVersion t_ipVersion) :
+    Socket(t_ipVersion),
+    m_ipVersion(t_ipVersion) {
 
 }
 
@@ -19,7 +24,14 @@ void ClientSocket::connect(std::string t_serverAddress, std::string t_serverPort
     int connection;
     std::memset(&hints, 0, sizeof hints);
 
-    hints.ai_family = AF_UNSPEC;
+    if(m_ipVersion == Constants::ipVersion::IPv4) {
+        hints.ai_family = AF_INET;
+    }
+    else if(m_ipVersion == Constants::ipVersion::IPv6) {
+        hints.ai_family = AF_INET6;
+    }
+
+
     hints.ai_socktype = SOCK_STREAM;
 
     getaddrinfo(t_serverAddress.c_str(), t_serverPort.c_str(), &hints, &res);
@@ -29,7 +41,8 @@ void ClientSocket::connect(std::string t_serverAddress, std::string t_serverPort
         case ETIMEDOUT : throw std::runtime_error("Connection timeout");
         case ECONNREFUSED : throw std::runtime_error("Connection refused");
         case ENETUNREACH : throw std::runtime_error("Network is unreachable");
-        default: throw std::runtime_error("Connection couldn't be established");
+        default: std::cout << errno << std::endl;
+            throw std::runtime_error("Connection couldn't be established");
         }
     }
     else {

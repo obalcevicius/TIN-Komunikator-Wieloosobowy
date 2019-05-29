@@ -3,10 +3,11 @@
 
 #include <arpa/inet.h>
 #include <iostream>
+#include <memory>
 #include <netinet/in.h>
 #include <netdb.h>
 #include <string>
-#include <deque>
+#include <vector>
 
 #include "socket.h"
 
@@ -21,7 +22,7 @@ public:
      * @brief Initializes server, bind address and port to socket
      * @param t_port Port to listen on
      */
-    ServerSocket(unsigned short t_port);
+    ServerSocket(Constants::ipVersion t_ipVersion, unsigned short t_port);
     virtual ~ServerSocket() override;
 
     /**
@@ -40,8 +41,8 @@ public:
      */
     void sendToAll(const char* t_buffer, size_t length);
 private:
-    struct sockaddr_in m_server;
-    std::deque<Socket> m_clients;
+    //struct sockaddr_in m_server;
+    std::vector<std::unique_ptr<Socket>> m_clients;
 };
 
 } // namespace Communication
