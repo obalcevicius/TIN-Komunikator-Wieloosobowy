@@ -1,39 +1,27 @@
 #ifndef MESSAGE_H
 #define MESSAGE_H
 
-#include <sstream>
+#include "plainMessage.h"
+#include "messageType.h"
 
-#include "plainmessage.h"
 namespace Communication {
-
 
 /**
  * @brief Base class for all messages
  */
-class Message
-{
-public:
-    Message();
-    /**
-     * @brief Returns message ID, which is used to identify message type
-     * @return message type
-     */
-    virtual int getHeader() const = 0;
-    /**
-     * @brief Serializes message to output stream, all derived classes override this method
-     * @param t_ostream Stream to serialize data to
-     */
-    virtual PlainMessage serialize() const = 0;
+class Message 
+{    
+	  static Message * createMessage(Header * head);
+	  //tu są oba schematy deserializacji uwzględnione
+	  static Message * transform(PlainMessage oldMessage);
 
-    /**
-     * @brief Deserialized message from output stream, all derived classes override this method
-     * @param t_ostream Stream with message data
-     */
-    virtual void deserialize(std::istream& t_istream) = 0;
-
-    virtual ~Message();
+	  static Message * deserialize(PlainMessage mess);
+	  virtual void virt_deserialize(PlainMessage mess) = 0;
+	  virtual PlainMessage serialize() = 0;
+	  virtual MessageType presentType() = 0;
+	  //void send(NodeInfo node);
 };
-
+  
 } // namespace Communication
 
-#endif // MESSAGE_H
+#endif //MESSAGE_H
