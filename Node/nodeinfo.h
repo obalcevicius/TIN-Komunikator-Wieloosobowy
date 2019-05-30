@@ -6,7 +6,10 @@
 class NodeInfo
 {
 public:
+    NodeInfo();
     NodeInfo(std::string t_ipAddress, std::string t_port);
+    NodeInfo(const NodeInfo&);
+    NodeInfo& operator=(const NodeInfo&);
     std::string getIPAddress() const;
     std::string getPort() const;
 

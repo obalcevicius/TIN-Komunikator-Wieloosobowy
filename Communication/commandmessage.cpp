@@ -1,8 +1,7 @@
-#include <sstream>
-#include <iomanip>
 #include <arpa/inet.h>
+#include <bitset>
 #include <iostream>
-
+#include <sstream>
 #include "commandmessage.h"
 #include "constants.h"
 
@@ -26,25 +25,32 @@ CommandMessage::CommandMessage(std::string t_command, int t_info) :
 int CommandMessage::getHeader() const {
     return Constants::commandMessageHeader;
 }
+std::string CommandMessage::getCommand() const {
+    return m_command;
+}
 
 PlainMessage CommandMessage::serialize() const {
-    std::stringstream sstream;
-    std::stringstream msg;
-    sstream << getHeader();
-
-    sstream << m_command;
-    sstream << m_info;
-
-
-    msg << std::hex << std::setw(8) << std::setfill('0') << htonl(sstream.str().size());
-
-    msg << sstream.str().data();
-    std::cout << "message size: " << msg.str().size() << std::endl;
-    return PlainMessage(msg.str());
-
+    std::stringstream body, message;
+    // Add message data into stream
+    body << getHeader() << " ";
+    body << m_command << " ";
+    body << m_info;
+    // Prepend message size in binary format. Always 32 bytes.
+    message << std::bitset<32>(htonl(body.str().size())).to_string();
+    message << body.str().data();
+    return PlainMessage(message.str());
 }
-void CommandMessage::deserialize(std::istream &t_istream) {
-    std::getline(t_istream, m_command);
+void CommandMessage::deserialize(std::unique_ptr<PlainMessage> t_message)  {
+    std::string messageString(t_message->getMessage(), t_message->getMessageLength());
+    std::stringstream messageStream(messageString);
+    int messageHeader;
+    messageStream >> messageHeader;
+    if(messageHeader != getHeader()) {
+        std::cout << "WRONG MESSAGE!: " << messageHeader << std::endl;
+        return;
+    }
+    messageStream >> m_command;
+    messageStream >> m_info;
 }
 
 CommandMessage::~CommandMessage() {

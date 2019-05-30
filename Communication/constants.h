@@ -9,7 +9,10 @@ namespace Communication {
 class Constants
 {
 public:
-    static constexpr unsigned int commandMessageHeader = 1;
+    static constexpr int incorrectHeader = -1;
+    static constexpr int commandMessageHeader = 1;
+    static constexpr int participationMessageHeader = 2;
+    static constexpr int headerSize = 32;
     enum class ipVersion {
         IPv4,
         IPv6

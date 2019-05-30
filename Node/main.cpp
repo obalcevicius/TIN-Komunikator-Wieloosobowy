@@ -7,9 +7,13 @@
 #include <sstream>
 #include <thread>
 
+#include <bitset>
+
 #include "clientsocket.h"
+#include "commandmessage.h"
 #include "constants.h"
 #include "commandmessage.h"
+#include "participationmessage.h"
 #include "node.h"
 #include "serversocket.h"
 
@@ -18,14 +22,6 @@
 
 int main(int argc, char* argv[]) {
 
-
-//    std::string str_("hello world!");
-
-//    std::stringstream sstream;
-//    sstream << std::hex << std::setw(8) << std::setfill('0') << 12;
-//    std::cout << sstream.str() << std::endl;
-
-//    return 0;
     for(int i = 0; i < argc; ++i) {
         std::cout << argv[i] << std::endl;
     }
@@ -48,7 +44,8 @@ int main(int argc, char* argv[]) {
             else if(!command.compare("0")) {
                 break;
             }
-            Communication::CommandMessage msg(command);
+            NodeInfo nd("127.0.0.2", "2500");
+            Communication::ParticipationMessage msg(nd, command);
             myNode.broadcastMessage(msg.serialize());
 
         }
@@ -62,16 +59,12 @@ int main(int argc, char* argv[]) {
         do {
 
             auto msg = clientSock.readMessage();
-            std::string str (msg->getMessage());
-            std::stringstream ss(str);
-            std::string command;
-            int num;
-            unsigned int header;
-            ss>>header;
-            ss>>command;
-            ss>>num;
 
-            std::cout <<"MESSAGE: " << header << " " << command <<" " << num << std::endl;
+            Communication::ParticipationMessage labas;
+            labas.deserialize(std::move(msg));
+
+            std::cout <<"MESSAGE: " << labas.getHeader() << " " << labas.getCommand() << " "
+                << labas.getNodeInfo().getIPAddress() << "  " << labas.getNodeInfo().getPort() << std::endl;
         }
         while(msg.get()[1] != '0');
     }

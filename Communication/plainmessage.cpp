@@ -1,4 +1,7 @@
 #include <cstring>
+#include <sstream>
+
+#include "constants.h"
 #include "plainmessage.h"
 
 namespace Communication {
@@ -13,8 +16,12 @@ PlainMessage::PlainMessage(const std::string& t_data) {
     m_length = t_data.size();
 }
 
-PlainMessage::PlainMessage(std::unique_ptr<char> t_data) :
-    m_buffer(std::move(t_data)) {}
+PlainMessage::PlainMessage(std::unique_ptr<char> t_data, unsigned int t_length) :
+    m_buffer(std::move(t_data)),
+    m_length(t_length)
+{
+
+}
 
 PlainMessage::~PlainMessage() {
 
@@ -26,9 +33,17 @@ PlainMessage::PlainMessage(PlainMessage&& rhs) :
 {
 
 }
-char* PlainMessage::getMessage() const {
+
+int PlainMessage::getMessageType() const {
+    if(m_buffer != nullptr) {
+        return m_buffer.get()[0] - '0';
+    }
+    return Constants::incorrectHeader;
+}
+const char* PlainMessage::getMessage() const {
     return m_buffer.get();
 }
+
 
 unsigned int PlainMessage::getMessageLength() const {
     return m_length;

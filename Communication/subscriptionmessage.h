@@ -1,8 +1,10 @@
 #ifndef SUBSCRIPTIONMESSAGE_H
 #define SUBSCRIPTIONMESSAGE_H
 
-#include "message.h"
+#include <memory>
 
+#include "message.h"
+#include "plainmessage.h"
 namespace Communication {
 
 /**
@@ -15,7 +17,7 @@ public:
 
     virtual int getHeader() const override;
     virtual PlainMessage serialize() const override;
-    virtual void deserialize(std::istream& t_istream) override;
+    virtual void deserialize(std::unique_ptr<PlainMessage> t_message) override;
 
     virtual ~SubscriptionMessage() override;
 private:

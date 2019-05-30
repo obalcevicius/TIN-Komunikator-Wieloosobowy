@@ -1,3 +1,4 @@
+#include <bitset>
 #include <iostream>
 #include <exception>
 #include <cstdlib>
@@ -36,7 +37,7 @@ void Socket::close() {
 void Socket::send(const char* t_buffer, size_t t_length) {
     size_t offset = 0;
     long sValue;
-    std::cout << "SENDING " << t_buffer << " " << t_length <<std::endl;
+    std::cout << std::string(t_buffer, t_length) <<std::endl;
     while(offset != t_length) {
         sValue = ::send(getSocketFD(), t_buffer + offset, t_length-offset, 0);
         if(sValue == -1 ) {
@@ -54,19 +55,21 @@ void Socket::receive(char* t_buffer, size_t t_length) {
 }
 
 std::unique_ptr<PlainMessage> Socket::readMessage() {
-    auto headerInfo = std::unique_ptr<char>(new char[9]);
-    receive(headerInfo.get(), 8);
-    headerInfo.get()[8] = '\0';
-    unsigned long int messageLength = strtoul(headerInfo.get(), NULL, 16);
+    // first we read message size into a string, then we convert binary string form
+    //  into number and then convert from network to host format
+    char headerInfo[32];
+    receive(headerInfo, 32);
+    std::string sizeStr(headerInfo, 32);
+    std::bitset<32> messageSize(std::string(headerInfo, 32));
+    unsigned long int messageLength = messageSize.to_ulong();
     messageLength = ntohl(messageLength);
 
-    auto msg_body = std::unique_ptr<char>(new char[messageLength +1 ]);
-    msg_body.get()[messageLength] = '\0';
+    auto msg_body = std::unique_ptr<char>(new char[messageLength]);
     receive(msg_body.get(), messageLength);
-    auto msgBody = std::unique_ptr<PlainMessage>( new PlainMessage(std::move(msg_body)));
+    auto msgBody = std::unique_ptr<PlainMessage>( new PlainMessage(std::move(msg_body), messageLength));
     return msgBody;
-
 }
+
 int Socket::getSocketFD() const {
     return m_sockfd;
 }

@@ -16,11 +16,14 @@ SOURCES += \
         datamessage.cpp \
         echomessage.cpp \
         message.cpp \
+        participationmessage.cpp \
         plainmessage.cpp \
         serversocket.cpp \
         socket.cpp \
         subscriptionmessage.cpp \
         tokenmessage.cpp
+
+INCLUDEPATH += $$PWD/../Node
 
 HEADERS += \
         clientsocket.h \
@@ -29,6 +32,7 @@ HEADERS += \
         datamessage.h \
         echomessage.h \
         message.h \
+        participationmessage.h \
         plainmessage.h \
         serversocket.h \
         socket.h \

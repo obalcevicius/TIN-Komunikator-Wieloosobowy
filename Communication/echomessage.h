@@ -12,7 +12,7 @@ public:
 
     virtual int getHeader() const override;
     virtual PlainMessage serialize() const override;
-    virtual void deserialize(std::istream& t_istream) override;
+    //virtual void deserialize(std::istream& t_istream) override;
 
     virtual ~EchoMessage() override;
 
