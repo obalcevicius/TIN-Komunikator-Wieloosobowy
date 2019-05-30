@@ -3,6 +3,8 @@
 
 #include <memory>
 
+#include "constants.h"
+
 namespace Communication {
 
 /**
@@ -11,7 +13,6 @@ namespace Communication {
 class PlainMessage
 {
 public:
-    PlainMessage();
     /**
      * @brief Constructs PlainMessage from string constaining message
      * @param t_data  String with serialized message
@@ -35,12 +36,28 @@ public:
      * @return Message header type as of constants.h
      */
     int getMessageType() const;
+
+    /**
+     * @brief Returns pointer to messages' body
+     * @return
+     */
     const char* getMessage() const;
+
+    /**
+     * @brief Returns serialized messages' length without header
+     * @return
+     */
     unsigned int getMessageLength() const;
+
+    const char* getMessageHeader() const;
     ~PlainMessage();
 private:
+    void prepareHeader();
+    const char* getMessageBody() const;
+    std::string m_header;
     std::unique_ptr<char> m_buffer;
     unsigned int m_length;
+
 };
 
 } // namespace Communication

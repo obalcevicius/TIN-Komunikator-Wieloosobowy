@@ -39,7 +39,7 @@ public:
      * @param Buffer with data to send
      * @param Length of buffer
      */
-    void sendToAll(const char* t_buffer, size_t length);
+    void sendToAll(const PlainMessage& t_message);
 private:
     //struct sockaddr_in m_server;
     std::vector<std::unique_ptr<Socket>> m_clients;

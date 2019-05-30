@@ -31,7 +31,7 @@ void Node::acceptConnections(bool& t_finish) {
 }
 
 void Node::broadcastMessage(const Communication::PlainMessage& t_msg) {
-    m_server.sendToAll(t_msg.getMessage(), t_msg.getMessageLength());
+    m_server.sendToAll(t_msg);
 }
 
 void Node::joinGroup(std::string t_ipAddress, std::string t_port) {

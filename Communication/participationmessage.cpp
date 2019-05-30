@@ -30,15 +30,13 @@ std::string ParticipationMessage::getCommand() const {
 }
 
 PlainMessage ParticipationMessage::serialize() const {
-    std::stringstream body, message;
+    std::stringstream body;
     // Add message data into stream
     body << getHeader() << " ";
     body << m_command << " ";
     body << m_thisNode.getIPAddress() << " " << m_thisNode.getPort();
-    // Prepend message size in binary format. Always 32 bytes.
-    message << std::bitset<32>(htonl(body.str().size())).to_string();
-    message << body.str().data();
-    return PlainMessage(message.str());
+
+    return PlainMessage(body.str());
 }
 
 void ParticipationMessage::deserialize(std::unique_ptr<PlainMessage> t_message)  {

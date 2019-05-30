@@ -1,10 +1,13 @@
+#include <arpa/inet.h>
 #include <bitset>
-#include <iostream>
-#include <exception>
 #include <cstdlib>
+#include <exception>
+#include <iostream>
+#include <sstream>
+
 #include "constants.h"
 #include "socket.h"
-#include <arpa/inet.h>
+
 
 namespace Communication {
 
@@ -48,22 +51,35 @@ void Socket::send(const char* t_buffer, size_t t_length) {
 }
 
 void Socket::receive(char* t_buffer, size_t t_length) {
-    long bytesRead = ::recv(getSocketFD(),t_buffer, t_length, 0);
-    if(bytesRead == -1) {
-        throw std::runtime_error("Couln't read message");
+    long bytesLeft = static_cast<long>(t_length);
+    long bytesRead;
+    while(bytesLeft > 0) {
+        bytesRead = ::recv(getSocketFD(),t_buffer, t_length, 0);
+        if(bytesRead == -1) {
+            throw std::runtime_error("Couln't read message");
+        }
+        bytesLeft -= bytesRead;
     }
+}
+
+void Socket::sendMessage(const PlainMessage &t_message) {
+    send(t_message.getMessageHeader(), Constants::headerSize);
+    send(t_message.getMessage(), t_message.getMessageLength());
 }
 
 std::unique_ptr<PlainMessage> Socket::readMessage() {
     // first we read message size into a string, then we convert binary string form
     //  into number and then convert from network to host format
-    char headerInfo[32];
-    receive(headerInfo, 32);
-    std::string sizeStr(headerInfo, 32);
-    std::bitset<32> messageSize(std::string(headerInfo, 32));
+    char headerInfo[Constants::headerSize];
+    receive(headerInfo, Constants::headerSize);
+    std::string headerStr(headerInfo, Constants::headerSize);
+    std::stringstream messageHeader(headerStr); std::bitset<32> messageSize;
+    int messageType;
+    messageHeader >> messageSize >> messageType;
     unsigned long int messageLength = messageSize.to_ulong();
     messageLength = ntohl(messageLength);
 
+    std::cout << messageLength << " " << messageType << std::endl;
     auto msg_body = std::unique_ptr<char>(new char[messageLength]);
     receive(msg_body.get(), messageLength);
     auto msgBody = std::unique_ptr<PlainMessage>( new PlainMessage(std::move(msg_body), messageLength));

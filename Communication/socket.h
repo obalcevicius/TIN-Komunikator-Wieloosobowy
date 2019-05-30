@@ -33,6 +33,12 @@ public:
     void send(const char* t_buffer, size_t t_length);
 
     /**
+     * @brief Sends serialized message
+     * @param t_message
+     */
+    void sendMessage(const PlainMessage& t_message);
+
+    /**
      * @brief Reads data from socket to buffer
      * @param t_buffer Buffer to read data to
      * @param t_length Length of data to read

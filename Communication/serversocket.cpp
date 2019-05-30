@@ -84,9 +84,9 @@ void ServerSocket::accept() {
     }
     m_clients.push_back(std::unique_ptr<Socket>(new Socket(newConnectionFD)));
 }
-void ServerSocket::sendToAll(const char* t_buffer, size_t t_length) {
+void ServerSocket::sendToAll(const PlainMessage& t_message) {
     for(auto& client : m_clients) {
-        client->send(t_buffer, t_length);
+        client->sendMessage(t_message);
     }
 }
 

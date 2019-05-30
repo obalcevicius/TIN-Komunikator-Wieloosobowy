@@ -1,5 +1,4 @@
-#include <arpa/inet.h>
-#include <bitset>
+
 #include <iostream>
 #include <sstream>
 #include "commandmessage.h"
@@ -30,15 +29,13 @@ std::string CommandMessage::getCommand() const {
 }
 
 PlainMessage CommandMessage::serialize() const {
-    std::stringstream body, message;
+    std::stringstream body;
     // Add message data into stream
     body << getHeader() << " ";
     body << m_command << " ";
     body << m_info;
-    // Prepend message size in binary format. Always 32 bytes.
-    message << std::bitset<32>(htonl(body.str().size())).to_string();
-    message << body.str().data();
-    return PlainMessage(message.str());
+
+    return PlainMessage(body.str());
 }
 void CommandMessage::deserialize(std::unique_ptr<PlainMessage> t_message)  {
     std::string messageString(t_message->getMessage(), t_message->getMessageLength());
