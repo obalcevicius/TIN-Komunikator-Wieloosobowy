@@ -9,27 +9,27 @@ namespace Communication {
 
 	EchoMessage::EchoMessage() {
 	}
-	EchoMessage::EchoMessage(PlainMessage mess) {
-		std::stringstream strm(
-		std::string(
-		mess.getContent(), mess.getContentSize()));
-		strm >> command;
+	EchoMessage::EchoMessage(PlainMessage t_mess) {
+		virt_deserialize(t_mess);
 	}
-	void EchoMessage::virt_deserialize(PlainMessage mess) {
-		std::stringstream strm(
-		std::string(
-		mess.getContent(), mess.getContentSize()));
-		strm >> command;
+	void EchoMessage::virt_deserialize(PlainMessage t_mess) {
+		stringstream strm(
+		string(
+		t_mess.getContent(), t_mess.getContentSize()));
+		strm >> m_command;
 	}
-	EchoMessage::EchoMessage(char command):
-		command(command) {
+	EchoMessage::EchoMessage(char t_command):
+		m_command(t_command) {
 	}
 	PlainMessage EchoMessage::serialize() {
-		PlainMessage mess(commandMess);
+		PlainMessage r_mess(commandMess);
 		stringstream strm;
-		strm << command;
-		mess.setContent(strm.str());
-		return mess;
+		strm << m_command;
+		r_mess.setContent(strm.str());
+		return r_mess;
+	}
+	char EchoMessage::getCommand() {
+		return m_command;
 	}
 	MessageType EchoMessage::typeCheck() {
 		return echoMess;

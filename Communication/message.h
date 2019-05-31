@@ -12,13 +12,13 @@ namespace Communication {
 class Message 
 {    
 	  public:
-	  static Message * createMessage(Header * head);
+	  static Message * createMessage(Header * t_head);
 	  //tu są oba schematy deserializacji uwzględnione
-	  static Message * transform(PlainMessage oldMessage);
+	  static Message * transform(PlainMessage t_oldMessage);
 
-	  static Message * deserialize(PlainMessage mess);
-	  virtual void virt_deserialize(PlainMessage mess) = 0;
-	  virtual PlainMessage serialize() = 0;
+	  static Message * deserialize(PlainMessage t_mess);
+	  virtual void virt_deserialize(PlainMessage t_mess) = 0;
+	  virtual PlainMessage serialize() = 0; //a tu move konstruktor
 	  virtual MessageType typeCheck() = 0;
 	  //void send(NodeInfo node);
 };

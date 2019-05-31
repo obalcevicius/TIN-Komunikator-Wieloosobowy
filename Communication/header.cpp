@@ -3,32 +3,35 @@
 namespace Communication {
 
 	Header::Header():
-		type(noMess), restSize(0) {
+		m_type(noMess), m_restSize(0) {
 	}
-	Header::Header(MessageType type):
-		type(type), restSize(0) {
+	Header::Header(MessageType t_type):
+		m_type(t_type), m_restSize(0) {
 	}
 	int Header::getOriginalNum() {
-		return ::ntohl(restSize);
+		return ::ntohl(m_restSize);
 	}
-	Header Header::flip() {
-		Header flipped;
-		flipped.type = 
-		(MessageType)::ntohl((uint32_t)type); //pytanie czy to na nich
-						// będzie działać
-		flipped.restSize = ::ntohl(restSize);
-		return flipped;
+	int Header::getActualNum() {
+		return m_restSize;
 	}
-	Header Header::prepare() {
-		Header prepared;
-		prepared.type =  //pytanie czy to na nich
+	Header Header::unpack() {
+		Header r_changed;
+		r_changed.m_type = 
+		(MessageType)::ntohl((uint32_t)m_type); //pytanie czy to na nich
 						// będzie działać
-		(MessageType)::htonl((uint32_t)type); //pytanie czy to na nich
-		prepared.restSize = ::htonl(restSize);
-		return prepared;
+		r_changed.m_restSize = ::ntohl(m_restSize);
+		return r_changed;
+	}
+	Header Header::pack() {
+		Header r_changed;
+		r_changed.m_type =  //pytanie czy to na nich
+						// będzie działać
+		(MessageType)::htonl((uint32_t)m_type); //pytanie czy to na nich
+		r_changed.m_restSize = ::htonl(m_restSize);
+		return r_changed;
 	}
 	MessageType Header::getType() {
-		return type;
+		return m_type;
 	}
 
 } //namespace Communication

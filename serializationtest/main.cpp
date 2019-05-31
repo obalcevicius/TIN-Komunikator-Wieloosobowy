@@ -31,13 +31,15 @@ int main() {
 	PlainMessage pmess = mess.serialize();
 		string a(pmess.getContent(), pmess.getContentSize());
 		cout << a << endl;
-	pmess.prepareHeader();
+	pmess.pack();
 	//teraz wiadomość może być przesłana
-	PlainMessage nmess = pmess.flip_copy();
+	PlainMessage nmess = pmess.copyAndUnpack();
+	pmess.destroy();
 	Message * gmess = Message::deserialize(nmess);
 	if(gmess->typeCheck() == groupMess) {
 		cout << "Tak, jest groupMessage!" << endl;
 		string a(nmess.getContent(), nmess.getContentSize());
+		nmess.destroy();
 		cout << a << endl;
 		GroupMessage * ggmess = static_cast<GroupMessage *>(gmess);
 		ggmess->getGroup().present();
@@ -51,13 +53,15 @@ int main() {
 	PlainMessage pmess = mess.serialize();
 		string a(pmess.getContent(), pmess.getContentSize());
 		cout << a << endl;
-	pmess.prepareHeader();
+	pmess.pack();
 	//teraz wiadomość może być przesłana
-	PlainMessage nmess = pmess.flip_copy();
+	PlainMessage nmess = pmess.copyAndUnpack();
+	pmess.destroy();
 	Message * gmess = Message::deserialize(nmess);
 	if(gmess->typeCheck() == oneMess) {
 		cout << "Tak, jest oneMessage!" << endl;
 		string a(nmess.getContent(), nmess.getContentSize());
+		nmess.destroy();
 		cout << a << endl;
 		OneMessage * ggmess = static_cast<OneMessage *>(gmess);
 		ggmess->getNode().present();

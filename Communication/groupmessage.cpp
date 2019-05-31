@@ -7,34 +7,31 @@ namespace Communication {
 
 	GroupMessage::GroupMessage() {
 	}
-	GroupMessage::GroupMessage(PlainMessage mess) {
-		virt_deserialize(mess);
+	GroupMessage::GroupMessage(PlainMessage t_mess) {
+		virt_deserialize(t_mess);
 	}
-	void GroupMessage::virt_deserialize(PlainMessage mess) {
+	void GroupMessage::virt_deserialize(PlainMessage t_mess) {
 		stringstream strm(
 		string(
-		mess.getContent(), mess.getContentSize()));
-		strm >> group >> command;
+		t_mess.getContent(), t_mess.getContentSize()));
+		strm >> m_group >> m_command;
 	}
-	GroupMessage::GroupMessage(const NodeGroup & group,
-		string command):
-		group(group), command(command) {
+	GroupMessage::GroupMessage(const NodeGroup & t_group,
+		string t_command): CommandMessage(t_command),
+		m_group(t_group) {
 	}
 	PlainMessage GroupMessage::serialize() {
-		PlainMessage mess(groupMess);
+		PlainMessage r_mess(groupMess);
 		stringstream strm;
-		strm << group << command;
-		mess.setContent(strm.str());
-		return mess;
+		strm << m_group << m_command;
+		r_mess.setContent(strm.str());
+		return r_mess;
 	}
 	MessageType GroupMessage::typeCheck() {
 		return groupMess;
 	}
 	NodeGroup GroupMessage::getGroup() {
-		return group;
-	}
-	string GroupMessage::getCommand() {
-		return command;
+		return m_group;
 	}
 
 } //namespace Communication

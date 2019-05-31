@@ -7,8 +7,8 @@
 
 namespace Communication {
 
-	Message * Message::createMessage(Header * head) {
-		switch (head->getType()) {
+	Message * Message::createMessage(Header * t_head) {
+		switch (t_head->getType()) {
 			case commandMess: return new CommandMessage();
 			case echoMess: return new EchoMessage();
 			case oneMess: return new OneMessage();
@@ -18,20 +18,22 @@ namespace Communication {
 		//itd.
 		}
 	}
-	Message * Message::transform(PlainMessage oldMessage) {
-		Message * newMessage = createMessage(oldMessage.getHeader());
-		newMessage->virt_deserialize(oldMessage);
-		return newMessage;
+	Message * Message::transform(PlainMessage t_oldMessage) {
+		//tu właśnie przekazuję ją przez wartość
+		Message * r_newMessage = 
+		createMessage(t_oldMessage.getHeader());
+		r_newMessage->virt_deserialize(t_oldMessage);
+		return r_newMessage;
 	}
 
-	Message * Message::deserialize(PlainMessage mess) {
-		switch (mess.getHeader()->getType()) {
-			case commandMess: return new CommandMessage(mess);
-			case echoMess: return new EchoMessage(mess);
-			case oneMess: return new OneMessage(mess);
-			case groupMess: return new GroupMessage(mess);
-			case allMess: return new AllMessage(mess);
-			//case dataMess: return new DataMessage(mess);
+	Message * Message::deserialize(PlainMessage t_mess) {
+		switch (t_mess.getHeader()->getType()) {
+			case commandMess: return new CommandMessage(t_mess);
+			case echoMess: return new EchoMessage(t_mess);
+			case oneMess: return new OneMessage(t_mess);
+			case groupMess: return new GroupMessage(t_mess);
+			case allMess: return new AllMessage(t_mess);
+			//case dataMess: return new DataMessage(t_mess);
 		//itd.
 		}
 	}

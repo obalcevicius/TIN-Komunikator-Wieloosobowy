@@ -9,13 +9,15 @@ class EchoMessage: public Message {
 
 	public:
 	EchoMessage();
-	EchoMessage(PlainMessage mess);
-	void virt_deserialize(PlainMessage mess);
-	EchoMessage(char command);
-	PlainMessage serialize();
-	MessageType typeCheck();
+	EchoMessage(PlainMessage t_mess);
+	virtual void virt_deserialize(PlainMessage t_mess);
+	EchoMessage(char t_command);
+	virtual PlainMessage serialize();
+	virtual MessageType typeCheck();
+	char getCommand();
+
 	private:
-	char command;
+	char m_command; //'?' lub '.'
 };	
 
 } //Communication

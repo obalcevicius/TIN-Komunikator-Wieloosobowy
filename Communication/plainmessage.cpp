@@ -3,61 +3,68 @@
 #include <iostream>
 using std::cout;
 using std::endl;
+using std::memcpy;
+using std::string;
 namespace Communication {
 
-	int PlainMessage::headerSize = sizeof(Header);
+	int PlainMessage::m_headerSize = sizeof(Header);
 	int PlainMessage::getHeaderSize() {
-		return headerSize;
+		return m_headerSize;
 	}
 	PlainMessage::PlainMessage(): 
-		content(nullptr), contentSize(0)
+		m_content(nullptr), m_contentSize(0)
 	{
-		header = new Header();
+		m_header = new Header();
 	}
-	PlainMessage::PlainMessage(MessageType type):
-		content(nullptr), contentSize(0)
+	PlainMessage::PlainMessage(MessageType t_type):
+		m_content(nullptr), m_contentSize(0)
 	{
-		header = new Header(type);
+		m_header = new Header(t_type);
 	}
-	PlainMessage PlainMessage::flip_copy() {
-		PlainMessage mess;
-		if(content != nullptr) {
-			*mess.header = header->flip();
-			mess.prepareAgain(contentSize);
-			std::memcpy(mess.content, content, contentSize);
-		}
-		return mess;
-	}		
 	char * PlainMessage::getContent() {
-		return content;
+		return m_content;
 	}
 	int PlainMessage::getSize() {
-		return headerSize + contentSize;
+		return m_headerSize + m_contentSize;
 	}
 	int PlainMessage::getContentSize() {
-		return contentSize;
+		return m_contentSize;
 	}
 	Header * PlainMessage::getHeader() {
-		return header;
+		return m_header;
 	}
 	void PlainMessage::prepare() {
-		contentSize = header->getOriginalNum();
-		content = new char[contentSize];
+		m_contentSize = m_header->getOriginalNum();
+		m_content = new char[m_contentSize];
 	}
-	void PlainMessage::prepareAgain(int contentSize) {
-		this->contentSize = contentSize;
-		content = new char[contentSize];
+	void PlainMessage::prepareAgain(int t_contentSize) {
+		m_contentSize = t_contentSize;
+		m_content = new char[t_contentSize];
 	}
-	void PlainMessage::prepareHeader() {
-		*header = header->prepare();
+	void PlainMessage::pack() {
+		*m_header = m_header->pack();
 	}
-
-	void PlainMessage::setContent(std::string cont) {
-		contentSize = cont.length();
-		//tak, może być niezwolniony, jeśli był
-		//wcześniej zaalokowany
-		content = new char[contentSize];
-		std::memcpy(content, cont.data(), contentSize);
+	void PlainMessage::unpack() {
+		*m_header = m_header->unpack();
+	}
+	PlainMessage PlainMessage::copyAndUnpack() {
+		PlainMessage r_mess;
+		if(m_content != nullptr) {
+			*r_mess.m_header = m_header->unpack();
+			r_mess.prepareAgain(m_contentSize);
+			memcpy(r_mess.m_content, m_content, m_contentSize);
+		}
+		return r_mess; //tu by się przydał konstruktor move
+	}		
+	void PlainMessage::setContent(std::string t_cont) {
+		if(m_content != nullptr) delete m_content;
+		m_contentSize = t_cont.length();
+		m_content = new char[m_contentSize];
+		memcpy(m_content, t_cont.data(), m_contentSize);
+	}
+	void PlainMessage::destroy() {
+		if (m_content != nullptr) delete m_content;
+		delete m_header;
 	}
 	/* - wiadomość nic nie wie o wysyłaniu
 	void PlainMessage::receiveMe(Socket sock) {

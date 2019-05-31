@@ -7,34 +7,31 @@ using Node::NodeInfo;
 
 namespace Communication {
 
-	OneMessage::OneMessage(): one("", "") {
+	OneMessage::OneMessage(): m_one("", "")  {
 	}
-	OneMessage::OneMessage(PlainMessage mess): one("", "") {
-		virt_deserialize(mess); //to trzeba będzie tu też wpisać
+	OneMessage::OneMessage(PlainMessage t_mess): m_one("", "") {
+		virt_deserialize(t_mess); //to trzeba będzie tu też wpisać
 		//w innych wiadomościach
 	}
-	void OneMessage::virt_deserialize(PlainMessage mess) {
+	void OneMessage::virt_deserialize(PlainMessage t_mess) {
 		std::stringstream strm(
 		std::string(
-		mess.getContent(), mess.getContentSize()));
-		strm >> one >> command;
+		t_mess.getContent(), t_mess.getContentSize()));
+		strm >> m_one >> m_command;
 	}
-	OneMessage::OneMessage(const NodeInfo & node, string command):
-		one(node), command(command) {
+	OneMessage::OneMessage(const NodeInfo & t_node, string t_command):
+		CommandMessage(t_command), m_one(t_node) {
 	}
 	PlainMessage OneMessage::serialize() {
-		PlainMessage mess(oneMess);
+		PlainMessage r_mess(oneMess);
 		stringstream strm;
-		strm << one << command;
-		mess.setContent(strm.str());
-		return mess;
+		strm << m_one << m_command;
+		r_mess.setContent(strm.str());
+		return r_mess;
 	}
 	
 	NodeInfo OneMessage::getNode() {
-		return one;
-	}
-	string OneMessage::getCommand() {
-		return command;
+		return m_one;
 	}
 	MessageType OneMessage::typeCheck() {
 		return oneMess;

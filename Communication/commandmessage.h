@@ -10,13 +10,15 @@ class CommandMessage: public Message {
 
 	public:
 	CommandMessage();
-	CommandMessage(PlainMessage mess);
-	void virt_deserialize(PlainMessage mess);
-	CommandMessage(std::string command);
-	PlainMessage serialize();
-	MessageType typeCheck();
-	private:
-	std::string command;
+	CommandMessage(PlainMessage t_mess);
+	virtual void virt_deserialize(PlainMessage t_mess);
+	CommandMessage(std::string t_command);
+	virtual PlainMessage serialize();
+	virtual MessageType typeCheck();
+	std::string getCommand();
+	
+	protected:
+	std::string m_command;
 };	
 
 } //namespace Communication

@@ -2,27 +2,26 @@
 #define ONEMESSAGE_H
 
 #include <string>
-#include "message.h"
+#include "commandmessage.h"
 #include "../Node/nodeinfo.h"
 
 namespace Communication {
 
-class OneMessage: public Message {
+class OneMessage: public CommandMessage {
 
 	public:
 	OneMessage();
-	OneMessage(PlainMessage mess);
-	void virt_deserialize(PlainMessage mess);
-	OneMessage(const Node::NodeInfo & node, std::string command);
-	PlainMessage serialize();
+	OneMessage(PlainMessage t_mess);
+	virtual void virt_deserialize(PlainMessage t_mess);
+	OneMessage(const Node::NodeInfo & t_node, std::string t_command);
+	virtual PlainMessage serialize();
 	Node::NodeInfo getNode();
-	std::string getCommand();
-	MessageType typeCheck();
+	virtual MessageType typeCheck();
 	
-	private:
-	Node::NodeInfo one;
-	std::string command;
+	protected:
+	Node::NodeInfo m_one;
 }; 
+
 } //namespace Communication
 	
 #endif //ONEMESSAGE_H	

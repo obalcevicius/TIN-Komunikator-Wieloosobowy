@@ -1,26 +1,25 @@
 #ifndef GROUPMESSAGE_H
 #define GROUPMESSAGE_H
 
-#include "message.h"
+#include "commandmessage.h"
 #include <string>
 #include "../Node/nodegroup.h" //popraw to Olgierd
 
 namespace Communication {
 
-class GroupMessage: public Message {
+class GroupMessage: public CommandMessage {
 
 	public:
 	GroupMessage();
-	GroupMessage(PlainMessage mess);
-	void virt_deserialize(PlainMessage mess);
-	GroupMessage(const Node::NodeGroup & group, std::string command);
-	PlainMessage serialize();
-	MessageType typeCheck();
+	GroupMessage(PlainMessage t_mess);
+	virtual void virt_deserialize(PlainMessage t_mess);
+	GroupMessage(const Node::NodeGroup & t_group, std::string t_command);
+	virtual PlainMessage serialize();
+	virtual MessageType typeCheck();
 	Node::NodeGroup getGroup();
-	std::string getCommand();
-	private:
-	Node::NodeGroup group;
-	std::string command;
+
+	protected:
+	Node::NodeGroup m_group;
 };	
 
 } //namespace Communication

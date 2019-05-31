@@ -8,13 +8,16 @@ class Header {
 	//się dobiera do wszyskich pól
 	public:
 	Header();
-	Header(MessageType type);
-	MessageType type; //tu trzeba stworzyć enum
-	int restSize;
+	Header(MessageType t_type);
 	int getOriginalNum();
-	Header flip();
-	Header prepare();
+	int getActualNum(); //nie użyta nigdzie dotąd
+	Header pack();
+	Header unpack();
 	MessageType getType();
+
+	private:
+	MessageType m_type; //tu trzeba stworzyć enum
+	int m_restSize;
 };
 
 } //namespace Communication
