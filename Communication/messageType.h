@@ -1,7 +1,11 @@
 #pragma once
 enum MessageType {
+	noMess,
 	echoMess,
-	addMeMess,
 	commandMess,
+	oneMess,
+	dataMess,
+	groupMess,
+	allMess
 	//itd.
 };

@@ -1,25 +1,38 @@
 #ifndef PLAINMESSAGE_H
 #define PLAINMESSAGE_H
 
-#include <memory>
+#include "header.h"
+#include <string>
 
 namespace Communication {
 
-class PlainMessage
-{
-public:
-    PlainMessage();
-    PlainMessage(const std::string& t_data);
-    PlainMessage(std::unique_ptr<char> t_data);
-    PlainMessage(PlainMessage&& rhs);
-    char* getMessage() const;
-    unsigned int getMessageLength() const;
-    ~PlainMessage();
-private:
-    std::unique_ptr<char> m_buffer;
-    unsigned int m_length;
+class PlainMessage { //istnieje hipotetyczna potrzeba kopiowania
+	//tylko jeszcze nie wiadomo gdzie
+	public:
+	static int getHeaderSize();
+	PlainMessage();
+	PlainMessage(MessageType type);
+	PlainMessage flip_copy();	
+	char * getContent();
+	int getSize();
+	int getContentSize();
+	Header * getHeader();
+	void prepare();
+	void prepareAgain(int contentSize);
+	void prepareHeader(); 
+	void setContent(std::string cont);
+	/* - wiadomość nic nie wie o wysyłaniu
+	void receiveMe(Socket sock);
+	void sendMe(Socket sock);
+	*/
+
+	private:
+	static int headerSize;
+	Header * header;
+	int contentSize;
+	char * content;
 };
 
-} // namespace Communication
+} //namespace Communication
 
-#endif // PLAINMESSAGE_H
+#endif //PLAINMESSAGE_H

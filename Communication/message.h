@@ -1,7 +1,7 @@
 #ifndef MESSAGE_H
 #define MESSAGE_H
 
-#include "plainMessage.h"
+#include "plainmessage.h"
 #include "messageType.h"
 
 namespace Communication {
@@ -11,6 +11,7 @@ namespace Communication {
  */
 class Message 
 {    
+	  public:
 	  static Message * createMessage(Header * head);
 	  //tu są oba schematy deserializacji uwzględnione
 	  static Message * transform(PlainMessage oldMessage);
@@ -18,7 +19,7 @@ class Message
 	  static Message * deserialize(PlainMessage mess);
 	  virtual void virt_deserialize(PlainMessage mess) = 0;
 	  virtual PlainMessage serialize() = 0;
-	  virtual MessageType presentType() = 0;
+	  virtual MessageType typeCheck() = 0;
 	  //void send(NodeInfo node);
 };
   

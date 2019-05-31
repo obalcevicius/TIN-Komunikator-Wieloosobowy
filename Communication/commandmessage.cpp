@@ -1,53 +1,38 @@
-#include <sstream>
-#include <iomanip>
-#include <arpa/inet.h>
-#include <iostream>
-
 #include "commandmessage.h"
-#include "constants.h"
+#include <sstream>
 
+using std::string;
+using std::stringstream;
 
 namespace Communication {
 
+	CommandMessage::CommandMessage() {
+	}
+	CommandMessage::CommandMessage(PlainMessage mess) {
+		stringstream strm(
+		string(
+		mess.getContent(), mess.getContentSize()));
+		strm >> command;
+	}
+	void CommandMessage::virt_deserialize(PlainMessage mess) {
+		stringstream strm(
+		string(
+		mess.getContent(), mess.getContentSize()));
+		strm >> command;
+	}
+	CommandMessage::CommandMessage(string command):
+		command(command) {
+	}
+	PlainMessage CommandMessage::serialize() {
+		PlainMessage mess(commandMess);
+		stringstream strm;
+		strm << command;
+		mess.setContent(strm.str());
+		return mess;
+	}
+	MessageType CommandMessage::typeCheck() {
+		return commandMess;
+	}
 
-CommandMessage::CommandMessage() {
-
-}
-
-CommandMessage::CommandMessage(std::string t_command, int t_info) :
-    m_command(t_command),
-    m_info(t_info)
-{
-    std::cout <<t_command.size();
-
-}
-
-
-int CommandMessage::getHeader() const {
-    return Constants::commandMessageHeader;
-}
-
-PlainMessage CommandMessage::serialize() const {
-    std::stringstream sstream;
-    std::stringstream msg;
-    sstream << getHeader();
-
-    sstream << m_command;
-    sstream << m_info;
-
-
-    msg << std::hex << std::setw(8) << std::setfill('0') << htonl(sstream.str().size());
-
-    msg << sstream.str().data();
-    std::cout << "message size: " << msg.str().size() << std::endl;
-    return PlainMessage(msg.str());
-
-}
-void CommandMessage::deserialize(std::istream &t_istream) {
-    std::getline(t_istream, m_command);
-}
-
-CommandMessage::~CommandMessage() {
-
-}
 } // namespace Communication
+			

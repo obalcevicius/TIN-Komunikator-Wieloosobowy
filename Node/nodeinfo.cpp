@@ -1,4 +1,11 @@
 #include "nodeinfo.h"
+#include <iostream>
+using std::ostream;
+using std::istream;
+using std::cout;
+using std::endl;
+
+namespace Node {
 
 NodeInfo::NodeInfo(std::string t_ipAddress, std::string t_port) :
     m_ipAddress(t_ipAddress),
@@ -21,3 +28,14 @@ bool NodeInfo::operator<(const NodeInfo& rhs) const{
     }
 }
 
+ostream & operator << (ostream & out, const NodeInfo & node) {
+	out << node.m_ipAddress << " " << node.m_port << " ";
+}
+istream & operator >> (istream & in, NodeInfo & node) {
+	in >> node.m_ipAddress >> node.m_port;
+}
+
+void NodeInfo::present() {
+	cout << "Węzeł: " << m_ipAddress << " : " << m_port << endl;
+}
+} //namespace Node

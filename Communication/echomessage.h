@@ -5,21 +5,19 @@
 
 namespace Communication {
 
-class EchoMessage : public Message
-{
-public:
-    EchoMessage();
+class EchoMessage: public Message {
 
-    virtual int getHeader() const override;
-    virtual PlainMessage serialize() const override;
-    virtual void deserialize(std::istream& t_istream) override;
+	public:
+	EchoMessage();
+	EchoMessage(PlainMessage mess);
+	void virt_deserialize(PlainMessage mess);
+	EchoMessage(char command);
+	PlainMessage serialize();
+	MessageType typeCheck();
+	private:
+	char command;
+};	
 
-    virtual ~EchoMessage() override;
+} //Communication
 
-private:
-
-};
-
-} // namespace Communication
-
-#endif // ECHOMESSAGE_H
+#endif //ECHOMESSAGE_H
