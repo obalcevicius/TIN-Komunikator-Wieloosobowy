@@ -10,30 +10,25 @@ CONFIG += create_prl link_prl
 
 
 SOURCES += \
-        clientsocket.cpp \
+	allmessage.cpp \
         commandmessage.cpp \
-        constants.cpp \
-        datamessage.cpp \
         echomessage.cpp \
+	groupmessage.cpp \
+	header.cpp \
+	onemessage.cpp \
         message.cpp \
         plainmessage.cpp \
-        serversocket.cpp \
-        socket.cpp \
-        subscriptionmessage.cpp \
-        tokenmessage.cpp
 
 HEADERS += \
-        clientsocket.h \
+	allmessage.h \
         commandmessage.h \
-        constants.h \
-        datamessage.h \
         echomessage.h \
+	groupmessage.h \
+	header.h \
+	onemessage.h \
         message.h \
         plainmessage.h \
-        serversocket.h \
-        socket.h \
-        subscriptionmessage.h \
-        tokenmessage.h
+	messageType.h
 unix {
     target.path = /usr/lib
     INSTALLS += target

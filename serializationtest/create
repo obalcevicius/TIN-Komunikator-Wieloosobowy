@@ -1,3 +1,0 @@
-g++ -std=c++11 -c ../Communication/*.cpp
-g++ -std=c++11 -c ../Node/*.cpp
-g++ -std=c++11 -o test *.o main.cpp

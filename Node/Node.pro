@@ -6,17 +6,14 @@ CONFIG += link_prl
 
 SOURCES += \
         main.cpp \
-        node.cpp \
         nodegroup.cpp \
         nodeinfo.cpp \
-        threadwrapper.cpp
 
 
 HEADERS += \ \
     node.h \
     nodegroup.h \
     nodeinfo.h \
-    threadwrapper.h
 
 
 
