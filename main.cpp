@@ -12,6 +12,7 @@
 #include "message.h"
 #include "plainmessage.h"
 #include "groupmessage.h"
+#include "echomessage.h"
 #include "messageType.h"
 #include "clientsocket.h"
 #include "constants.h"
@@ -49,7 +50,10 @@ int main(int argc, char* argv[]) {
 	    std::getline(std::cin, command);
 		if (command == "stop") continuation = false;
 		GroupMessage msg(grupa, command);
-		PlainMessage mess = msg.serialize();
+		EchoMessage emsg('!');
+		PlainMessage mess;
+		if (command != "!") mess = msg.serialize();
+		else mess = emsg.serialize();
 	std::cout << "Ciało wiadomości: " << std::endl << 
 		mess.getBody()
 		<< std::endl;
@@ -86,11 +90,17 @@ int main(int argc, char* argv[]) {
 		std::string com = gMess->getCommand();
 		std::cout << "Oto komenda: " << com << std::endl;
 		if (com == "stop") continuation = false;
+	    }
+	    else if(mess->typeCheck() == echoMess) {
+		std::cout << "Tak - jest echo-message" << std::endl;
+		EchoMessage * eMess = static_cast<EchoMessage *>(mess);
+		char i = eMess->getCommand();
+		if(i == '!') continuation = false;
+	    }
+		else
+		std::cout << "To nie jest group-message ani echo-message" 
+		<< std::endl;
 		delete mess;
-	    }
-	    else {
-		std::cout << "To nie jest group-message" << std::endl;
-	    }
         }
         while(continuation);
     }
