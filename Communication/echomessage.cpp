@@ -13,19 +13,14 @@ namespace Communication {
 		virt_deserialize(t_mess);
 	}
 	void EchoMessage::virt_deserialize(PlainMessage t_mess) {
-		stringstream strm(
-		string(
-		t_mess.getContent(), t_mess.getContentSize()));
-		strm >> m_command;
+		m_command = *t_mess.getContent();
 	}
 	EchoMessage::EchoMessage(char t_command):
 		m_command(t_command) {
 	}
 	PlainMessage EchoMessage::serialize() {
-		PlainMessage r_mess(commandMess);
-		stringstream strm;
-		strm << m_command;
-		r_mess.setContent(strm.str());
+		PlainMessage r_mess(echoMess);
+		r_mess.setBody(std::string(1, m_command));
 		return r_mess;
 	}
 	char EchoMessage::getCommand() {

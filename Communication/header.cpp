@@ -1,5 +1,7 @@
 #include "header.h" 
-
+#include <iostream>
+using std::cout;
+using std::endl;
 namespace Communication {
 
 	Header::Header():
@@ -33,5 +35,10 @@ namespace Communication {
 	MessageType Header::getType() {
 		return m_type;
 	}
-
+	void Header::present() {
+	cout << "Size :" << m_restSize << endl << "Type :" << m_type << endl;
+	}
+	void Header::setSize(int t_size) {
+		m_restSize = t_size;
+	}
 } //namespace Communication

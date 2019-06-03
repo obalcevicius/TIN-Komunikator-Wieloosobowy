@@ -3,7 +3,7 @@
 
 #include <string>
 #include "groupmessage.h"
-#include "../Node/nodegroup.h"
+#include "nodegroup.h"
 
 namespace Communication {
 

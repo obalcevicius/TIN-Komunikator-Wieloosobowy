@@ -11,7 +11,6 @@
 #include "nodeinfo.h"
 #include "serversocket.h"
 
-namespace Node {
 
 class Node
 {
@@ -23,7 +22,6 @@ public:
     void joinGroup(std::string t_ipAddress, std::string t_port);
     void startListening();
     void stopListening();
-    void acceptConnection();
 
 private:
     void acceptConnections(bool& t_finish);
@@ -35,5 +33,4 @@ private:
     Communication::ServerSocket m_server;
 };
 
-} //namespace Node
 #endif // NODE_H

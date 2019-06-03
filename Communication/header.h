@@ -11,9 +11,11 @@ class Header {
 	Header(MessageType t_type);
 	int getOriginalNum();
 	int getActualNum(); //nie użyta nigdzie dotąd
+	void setSize(int t_size);
 	Header pack();
 	Header unpack();
 	MessageType getType();
+	void present();
 
 	private:
 	MessageType m_type; //tu trzeba stworzyć enum

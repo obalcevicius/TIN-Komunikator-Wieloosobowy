@@ -8,13 +8,14 @@ SOURCES += \
         main.cpp \
         nodegroup.cpp \
         nodeinfo.cpp \
+	node.cpp 
 
 
-HEADERS += \ \
-    node.h \
+HEADERS += \ 
     nodegroup.h \
     nodeinfo.h \
-
+    node.h 
+     
 
 
 

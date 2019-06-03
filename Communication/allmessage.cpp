@@ -13,8 +13,7 @@ namespace Communication {
 	}
 	void AllMessage::virt_deserialize(PlainMessage t_mess) {
 		stringstream strm(
-		string(
-		t_mess.getContent(), t_mess.getContentSize()));
+		t_mess.getBody());
 		strm >> m_group >> m_subscribers >> m_command;
 	}
 	AllMessage::AllMessage(const NodeGroup & t_group,
@@ -26,7 +25,7 @@ namespace Communication {
 		PlainMessage r_mess(allMess);
 		stringstream strm;
 		strm << m_group << m_subscribers << m_command;
-		r_mess.setContent(strm.str());
+		r_mess.setBody(strm.str());
 		return r_mess;
 	}
 	MessageType AllMessage::typeCheck() {

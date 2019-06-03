@@ -18,6 +18,10 @@ SOURCES += \
 	onemessage.cpp \
         message.cpp \
         plainmessage.cpp \
+	socket.cpp \
+	clientsocket.cpp \
+	serversocket.cpp \
+	constants.cpp \
 
 HEADERS += \
 	allmessage.h \
@@ -29,6 +33,9 @@ HEADERS += \
         message.h \
         plainmessage.h \
 	messageType.h
+	clientsocket.h \
+	serversocket.h \
+	constants.h \
 unix {
     target.path = /usr/lib
     INSTALLS += target

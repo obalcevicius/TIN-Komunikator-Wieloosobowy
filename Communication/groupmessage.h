@@ -3,7 +3,7 @@
 
 #include "commandmessage.h"
 #include <string>
-#include "../Node/nodegroup.h" //popraw to Olgierd
+#include "nodegroup.h" //popraw to Olgierd
 
 namespace Communication {
 

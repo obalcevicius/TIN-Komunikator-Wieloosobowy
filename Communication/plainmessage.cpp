@@ -5,6 +5,7 @@ using std::cout;
 using std::endl;
 using std::memcpy;
 using std::string;
+using std::unique_ptr;
 namespace Communication {
 
 	int PlainMessage::m_headerSize = sizeof(Header);
@@ -24,7 +25,7 @@ namespace Communication {
 	char * PlainMessage::getContent() {
 		return m_content;
 	}
-	int PlainMessage::getSize() {
+	int PlainMessage::getSize() const {
 		return m_headerSize + m_contentSize;
 	}
 	int PlainMessage::getContentSize() {
@@ -56,15 +57,25 @@ namespace Communication {
 		}
 		return r_mess; //tu by się przydał konstruktor move
 	}		
-	void PlainMessage::setContent(std::string t_cont) {
+	void PlainMessage::setBody(std::string t_cont) {
 		if(m_content != nullptr) delete m_content;
 		m_contentSize = t_cont.length();
 		m_content = new char[m_contentSize];
+		m_header->setSize(m_contentSize);
 		memcpy(m_content, t_cont.data(), m_contentSize);
+	}
+	std::string PlainMessage::getBody() {
+		return string(m_content, m_contentSize);
 	}
 	void PlainMessage::destroy() {
 		if (m_content != nullptr) delete m_content;
 		delete m_header;
+	}
+	unique_ptr<char> PlainMessage::getOnce() const { 
+		unique_ptr<char> r_buff = unique_ptr<char>(new char[getSize()]);
+		memcpy(r_buff.get(), m_header, m_headerSize);
+		memcpy(r_buff.get() + m_headerSize, m_content, m_contentSize);
+		return r_buff;
 	}
 	/* - wiadomość nic nie wie o wysyłaniu
 	void PlainMessage::receiveMe(Socket sock) {

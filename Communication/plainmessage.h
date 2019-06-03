@@ -3,6 +3,7 @@
 
 #include "header.h"
 #include <string>
+#include <memory>
 
 namespace Communication {
 
@@ -15,13 +16,15 @@ class PlainMessage { //istnieje hipotetyczna potrzeba kopiowania
 	PlainMessage(MessageType t_type);
 	PlainMessage copyAndUnpack();	
 	char * getContent();
-	int getSize();
+	int getSize() const;
 	int getContentSize();
 	Header * getHeader();
 	void prepare();
 	void unpack();
 	void pack(); 
-	void setContent(std::string t_cont);
+	void setBody(std::string t_cont);
+	std::string getBody();
+	std::unique_ptr<char> getOnce() const;
 	/* - wiadomość nic nie wie o wysyłaniu
 	void receiveMe(Socket sock);
 	void sendMe(Socket sock);

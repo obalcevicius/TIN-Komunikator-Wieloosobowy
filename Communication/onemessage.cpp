@@ -15,8 +15,7 @@ namespace Communication {
 	}
 	void OneMessage::virt_deserialize(PlainMessage t_mess) {
 		std::stringstream strm(
-		std::string(
-		t_mess.getContent(), t_mess.getContentSize()));
+		t_mess.getBody());
 		strm >> m_one >> m_command;
 	}
 	OneMessage::OneMessage(const NodeInfo & t_node, string t_command):
@@ -26,7 +25,7 @@ namespace Communication {
 		PlainMessage r_mess(oneMess);
 		stringstream strm;
 		strm << m_one << m_command;
-		r_mess.setContent(strm.str());
+		r_mess.setBody(strm.str());
 		return r_mess;
 	}
 	

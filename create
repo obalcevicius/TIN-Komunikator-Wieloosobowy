@@ -1,0 +1,3 @@
+g++ -std=c++11 -ICommunication -INode -c Communication/*.cpp
+g++ -std=c++11 -ICommunication -INode -c Node/*.cpp
+g++ -std=c++11 -ICommunication -INode -o node *.o main.cpp -pthread

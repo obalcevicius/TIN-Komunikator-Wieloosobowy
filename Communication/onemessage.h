@@ -3,7 +3,7 @@
 
 #include <string>
 #include "commandmessage.h"
-#include "../Node/nodeinfo.h"
+#include "nodeinfo.h"
 
 namespace Communication {
 
