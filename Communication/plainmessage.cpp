@@ -1,10 +1,13 @@
 #include <arpa/inet.h>
 #include <bitset>
 #include <cstring>
-#include <sstream>
 #include <iostream>
+#include <sstream>
+
+
 #include "constants.h"
 #include "plainmessage.h"
+
 
 namespace Communication {
 
@@ -48,7 +51,7 @@ const char* PlainMessage::getMessageHeader() const {
     return m_header.data();
 }
 
-const char* PlainMessage::getMessage() const {
+const char* PlainMessage::getMessageBody() const {
     return m_buffer.get();
 }
 
@@ -56,6 +59,28 @@ void PlainMessage::prepareHeader() {
     std::stringstream header;
     header << std::bitset<32>(htonl(getMessageLength())).to_string() << " " << getMessageType();
     m_header = header.str();
+}
+
+std::unique_ptr<Message> PlainMessage::getMessage() const {
+    if(m_buffer != nullptr) {
+        if(getMessageType() == Constants::participationMessageHeader) {
+            ParticipationMessage* m = new ParticipationMessage();
+            m->deserialize(*this);
+            return std::unique_ptr<Message>(m);
+        }
+        else if(getMessageType() == Constants::commandMessageHeader) {
+            CommandMessage* m = new CommandMessage();
+            m->deserialize(*this);
+            return std::unique_ptr<Message>(m);
+        }
+        else if(getMessageType() == Constants::groupMembersMessageHeader) {
+            GroupMembersMessage* m = new GroupMembersMessage();
+            m->deserialize(*this);
+            return std::unique_ptr<Message>(m);
+        }
+
+    }
+    return std::unique_ptr<Message>(nullptr);
 }
 
 

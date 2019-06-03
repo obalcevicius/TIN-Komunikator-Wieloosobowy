@@ -1,10 +1,8 @@
 #ifndef NODEGROUP_H
 #define NODEGROUP_H
 
-
 #include <mutex>
 #include <set>
-
 
 #include "nodeinfo.h"
 

@@ -33,7 +33,7 @@ public:
     /**
      * @brief Accepts incoming connection
      */
-    void accept();
+    Socket accept();
     /**
      * @brief Sends data from buffer to all connected clients
      * @param Buffer with data to send

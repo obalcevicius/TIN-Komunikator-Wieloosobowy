@@ -2,7 +2,7 @@ TEMPLATE = subdirs
 
 SUBDIRS += \
     Communication \
-    CommunicationTest \
+    Komunikator \
     Node
 
 Node.subdir = Node

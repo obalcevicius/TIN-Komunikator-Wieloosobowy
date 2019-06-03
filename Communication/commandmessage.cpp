@@ -1,9 +1,12 @@
 
 #include <iostream>
 #include <sstream>
+
+
 #include "commandmessage.h"
 #include "constants.h"
-
+#include "messagevisitor.h"
+#include "plainmessage.h"
 
 namespace Communication {
 
@@ -28,6 +31,10 @@ std::string CommandMessage::getCommand() const {
     return m_command;
 }
 
+int CommandMessage::getInfo() const {
+    return m_info;
+}
+
 PlainMessage CommandMessage::serialize() const {
     std::stringstream body;
     // Add message data into stream
@@ -37,8 +44,8 @@ PlainMessage CommandMessage::serialize() const {
 
     return PlainMessage(body.str());
 }
-void CommandMessage::deserialize(std::unique_ptr<PlainMessage> t_message)  {
-    std::string messageString(t_message->getMessage(), t_message->getMessageLength());
+void CommandMessage::deserialize(const PlainMessage& t_message)  {
+    std::string messageString(t_message.getMessageBody(), t_message.getMessageLength());
     std::stringstream messageStream(messageString);
     int messageHeader;
     messageStream >> messageHeader;
@@ -50,6 +57,9 @@ void CommandMessage::deserialize(std::unique_ptr<PlainMessage> t_message)  {
     messageStream >> m_info;
 }
 
+void CommandMessage::accept(const MessageVisitor& t_visitor) {
+    t_visitor.visit(*this);
+}
 CommandMessage::~CommandMessage() {
 
 }

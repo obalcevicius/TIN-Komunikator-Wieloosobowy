@@ -3,9 +3,8 @@ QT       -= core gui
 TARGET = Communication
 TEMPLATE = lib
 CONFIG += staticlib
-CONFIG += c++14
+QMAKE_CXXFLAGS += -std=c++17
 CONFIG += create_prl link_prl
-
 
 
 
@@ -15,15 +14,17 @@ SOURCES += \
         constants.cpp \
         datamessage.cpp \
         echomessage.cpp \
+        groupmembersmessage.cpp \
         message.cpp \
+        messagevisitor.cpp \
         participationmessage.cpp \
         plainmessage.cpp \
         serversocket.cpp \
         socket.cpp \
-        subscriptionmessage.cpp \
-        tokenmessage.cpp
 
-INCLUDEPATH += $$PWD/../Node
+
+
+
 
 HEADERS += \
         clientsocket.h \
@@ -31,13 +32,15 @@ HEADERS += \
         constants.h \
         datamessage.h \
         echomessage.h \
+        groupmembersmessage.h \
         message.h \
+        messagevisitor.h \
         participationmessage.h \
         plainmessage.h \
         serversocket.h \
         socket.h \
-        subscriptionmessage.h \
-        tokenmessage.h
+
+
 unix {
     target.path = /usr/lib
     INSTALLS += target

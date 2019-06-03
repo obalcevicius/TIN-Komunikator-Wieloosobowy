@@ -22,6 +22,7 @@ public:
      */
     Socket(Constants::ipVersion t_ipVersion);
     Socket(int t_sockfd);
+    Socket(Socket&&);
     virtual ~Socket();
     Socket& operator=(const Socket&) = delete;
 

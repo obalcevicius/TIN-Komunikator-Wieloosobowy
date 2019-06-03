@@ -5,6 +5,8 @@
 
 namespace Communication {
 
+class MessageVisitor;
+
 class EchoMessage : public Message
 {
 public:
@@ -12,7 +14,9 @@ public:
 
     virtual int getHeader() const override;
     virtual PlainMessage serialize() const override;
-    //virtual void deserialize(std::istream& t_istream) override;
+    virtual void deserialize(const PlainMessage& t_message) override;
+
+     virtual void accept(const MessageVisitor& translator) override;
 
     virtual ~EchoMessage() override;
 

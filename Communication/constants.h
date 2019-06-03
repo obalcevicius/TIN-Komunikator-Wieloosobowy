@@ -12,6 +12,7 @@ public:
     static constexpr int incorrectHeader = -1;
     static constexpr int commandMessageHeader = 1;
     static constexpr int participationMessageHeader = 2;
+    static constexpr int groupMembersMessageHeader = 3;
 
     static constexpr int messageSize = 32;
     static constexpr int headerSize = 34;

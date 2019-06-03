@@ -28,6 +28,13 @@ Socket::Socket(Constants::ipVersion t_ipVersion) {
 Socket::Socket(int t_sockfd) : m_sockfd(t_sockfd) {
 
 }
+
+Socket::Socket(Socket&& rhs) :
+    m_sockfd(rhs.m_sockfd)
+{
+    rhs.m_sockfd = -1;
+}
+
 Socket::~Socket() {
     close();
 }
@@ -64,7 +71,7 @@ void Socket::receive(char* t_buffer, size_t t_length) {
 
 void Socket::sendMessage(const PlainMessage &t_message) {
     send(t_message.getMessageHeader(), Constants::headerSize);
-    send(t_message.getMessage(), t_message.getMessageLength());
+    send(t_message.getMessageBody(), t_message.getMessageLength());
 }
 
 std::unique_ptr<PlainMessage> Socket::readMessage() {
@@ -83,6 +90,8 @@ std::unique_ptr<PlainMessage> Socket::readMessage() {
     auto msg_body = std::unique_ptr<char>(new char[messageLength]);
     receive(msg_body.get(), messageLength);
     auto msgBody = std::unique_ptr<PlainMessage>( new PlainMessage(std::move(msg_body), messageLength));
+    std::cout << "END READ\n";
+
     return msgBody;
 }
 

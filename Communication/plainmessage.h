@@ -5,6 +5,11 @@
 
 #include "constants.h"
 
+#include "message.h"
+#include "commandmessage.h"
+#include "participationmessage.h"
+#include "groupmembersmessage.h"
+
 namespace Communication {
 
 /**
@@ -41,7 +46,9 @@ public:
      * @brief Returns pointer to messages' body
      * @return
      */
-    const char* getMessage() const;
+    const char* getMessageBody() const;
+
+    std::unique_ptr<Message> getMessage() const;
 
     /**
      * @brief Returns serialized messages' length without header
@@ -53,7 +60,6 @@ public:
     ~PlainMessage();
 private:
     void prepareHeader();
-    const char* getMessageBody() const;
     std::string m_header;
     std::unique_ptr<char> m_buffer;
     unsigned int m_length;

@@ -55,7 +55,7 @@ void ServerSocket::listen() {
     }
 }
 
-void ServerSocket::accept() {
+Socket ServerSocket::accept() {
     int newConnectionFD = 0;
     struct sockaddr_storage their_addr;
     int addrSize = sizeof their_addr;
@@ -82,7 +82,7 @@ void ServerSocket::accept() {
         std::cout << "CONNECTED : " << inet_ntop(AF_INET6, &reinterpret_cast<struct sockaddr_in6*>(&their_addr)->sin6_addr, addr, INET6_ADDRSTRLEN) << std::endl;
         std::cout << "CONNECTED : " << ntohs(reinterpret_cast<struct sockaddr_in6*>(&their_addr)->sin6_port) << std::endl;
     }
-    m_clients.push_back(std::unique_ptr<Socket>(new Socket(newConnectionFD)));
+    return Socket(newConnectionFD);
 }
 void ServerSocket::sendToAll(const PlainMessage& t_message) {
     for(auto& client : m_clients) {
