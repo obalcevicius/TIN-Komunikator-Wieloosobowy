@@ -31,13 +31,13 @@ public:
      * @param t_buffer Buffer with data to send
      * @param t_length Length of the buffer
      */
-    void send(const char* t_buffer, size_t t_length);
+    void send(const char* t_buffer, size_t t_length) const;
 
     /**
      * @brief Sends serialized message
      * @param t_message
      */
-    void sendMessage(const PlainMessage& t_message);
+    void sendMessage(const PlainMessage& t_message) const;
 
     /**
      * @brief Reads data from socket to buffer
@@ -56,6 +56,12 @@ public:
      * @return Socket descriptor
      */
     int getSocketFD() const;
+
+    /**
+     * @brief Gets bound ip address if socket is connected
+     * @return String representation of i.p. address
+     */
+    std::string getIPAddress() const;
 private:
     int m_sockfd;
 };

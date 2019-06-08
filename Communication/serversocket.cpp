@@ -9,7 +9,10 @@
 #include "serversocket.h"
 namespace Communication {
 
-ServerSocket::ServerSocket(Constants::ipVersion t_ipVersion, unsigned short t_port) : Socket(t_ipVersion) {
+ServerSocket::ServerSocket(Constants::ipVersion t_ipVersion, unsigned short t_port) :
+    Socket(t_ipVersion),
+    m_port(t_port)
+{
     int bind;
     struct addrinfo hints, *res;
     memset(&hints, 0, sizeof hints);
@@ -18,6 +21,8 @@ ServerSocket::ServerSocket(Constants::ipVersion t_ipVersion, unsigned short t_po
     }
     else if(t_ipVersion == Constants::ipVersion::IPv6) {
         hints.ai_family = AF_INET6;
+        int val = 0;
+        setsockopt(getSocketFD(), IPPROTO_IPV6, IPV6_V6ONLY, &val, sizeof(val));
     }
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_flags = AI_PASSIVE;
@@ -29,8 +34,6 @@ ServerSocket::ServerSocket(Constants::ipVersion t_ipVersion, unsigned short t_po
     if(bind == -1) {
         switch (errno) {
         case EACCES : throw std::runtime_error("Permission Denied");
-        case EBADF : throw  std::runtime_error("Unvalid socket descriptor");
-        case EINVAL : throw std::runtime_error("Socket already bound");
         case EADDRINUSE: throw std::runtime_error("Address already in use");
         default: throw  std::runtime_error("Couldn't bind address to socket");
         }
@@ -47,10 +50,7 @@ void ServerSocket::listen() {
     if(listen == -1) {
         switch (errno) {
         case EADDRINUSE: throw std::runtime_error("Another socket is listening on this port");
-        case EBADF : throw std::runtime_error("Sock FD is not a valid descriptor");
-        case ENOTSOCK: throw std::runtime_error("Sock FD is not a socket");
         default: throw std::runtime_error("Couldn't start listening");
-
         }
     }
 }
@@ -69,17 +69,18 @@ Socket ServerSocket::accept() {
         case ECONNABORTED : throw std::runtime_error("Connection aborted");
         case ENOTSOCK : throw std::runtime_error("Sock FD does not refer to socket");
         case EPROTO : throw std::runtime_error("Protocol error");
+        default: throw  std::runtime_error("Could not accept new connection");
         }
     }
     // todo: check who has connected
     if(their_addr.ss_family == AF_INET) {
         char addr[INET_ADDRSTRLEN];
-        std::cout << "CONNECTED : " << inet_ntop(AF_INET, &reinterpret_cast<struct sockaddr_in*>(&their_addr)->sin_addr, addr, INET_ADDRSTRLEN) << std::endl;
+        std::cout << "CONNECTED : " << inet_ntop(AF_INET, &reinterpret_cast<struct sockaddr_in*>(&their_addr)->sin_addr, addr, INET_ADDRSTRLEN) << " ";
         std::cout << "CONNECTED : " << ntohs(reinterpret_cast<struct sockaddr_in*>(&their_addr)->sin_port) << std::endl;
     }
     else if (their_addr.ss_family == AF_INET6) {
         char addr[INET6_ADDRSTRLEN];
-        std::cout << "CONNECTED : " << inet_ntop(AF_INET6, &reinterpret_cast<struct sockaddr_in6*>(&their_addr)->sin6_addr, addr, INET6_ADDRSTRLEN) << std::endl;
+        std::cout << "CONNECTED : " << inet_ntop(AF_INET6, &reinterpret_cast<struct sockaddr_in6*>(&their_addr)->sin6_addr, addr, INET6_ADDRSTRLEN) << " ";
         std::cout << "CONNECTED : " << ntohs(reinterpret_cast<struct sockaddr_in6*>(&their_addr)->sin6_port) << std::endl;
     }
     return Socket(newConnectionFD);
@@ -90,5 +91,8 @@ void ServerSocket::sendToAll(const PlainMessage& t_message) {
     }
 }
 
+unsigned short ServerSocket::getPort() const {
+    return m_port;
+}
 
 } // namespace Communication

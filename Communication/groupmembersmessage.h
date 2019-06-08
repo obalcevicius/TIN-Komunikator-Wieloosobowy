@@ -5,7 +5,7 @@
 
 #include "constants.h"
 #include "message.h"
-#include "../Node/nodegroup.h"
+#include "../Komunikator/nodegroup.h"
 
 namespace Communication {
 

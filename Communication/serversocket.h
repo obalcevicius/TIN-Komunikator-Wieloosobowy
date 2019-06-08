@@ -40,9 +40,12 @@ public:
      * @param Length of buffer
      */
     void sendToAll(const PlainMessage& t_message);
+
+    unsigned short getPort() const;
 private:
     //struct sockaddr_in m_server;
     std::vector<std::unique_ptr<Socket>> m_clients;
+    unsigned short m_port;
 };
 
 } // namespace Communication

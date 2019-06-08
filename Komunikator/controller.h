@@ -15,7 +15,7 @@
 
 class Node;
 
-class Controller : public QObject, public Communication::MessageVisitor
+class Controller : public QObject
 {
     Q_OBJECT
 public:
@@ -25,22 +25,22 @@ public:
 
 signals:
     void startListening(unsigned short, Communication::Constants::ipVersion);
-    void setGroup(const std::set<NodeInfo>&, const std::string&) const;
-    void joinResponse(const std::string&) const;
-    void broadcastMessage(const Communication::Message&) const;
+    void setGroup(const std::set<NodeInfo>&, std::string) const;
+    void showMessageBox(const std::string&, const std::string&) const;
+    void broadcastMessage(const Communication::Message*) const;
 public slots:
 
+    void showResponse(const std::string&, const std::string&);
     void groupJoinRequest(std::string, std::string);
     void startNode();
     void leaveGroup();
-    virtual void visit(const Communication::ParticipationMessage& t_message) const override;
-    virtual void visit(const Communication::CommandMessage& t_message) const override;
-    virtual void visit(const Communication::EchoMessage& t_message) const override;
-    virtual void visit(const Communication::GroupMembersMessage& t_message) const override;
+    void broadcastMessage(const std::string&);
 
 private:
     void joinGroup(const std::string&, const std::string&);
     PortDialog m_portDialog;
+    Node* m_node;
+    unsigned short m_port;
 
 
 };

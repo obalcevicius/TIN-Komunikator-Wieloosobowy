@@ -7,6 +7,8 @@
 #include <sstream>
 #include <thread>
 
+#include <sys/socket.h>
+
 #include <bitset>
 
 #include "clientsocket.h"
@@ -20,11 +22,11 @@
 #include "nodegroup.h"
 #include "serversocket.h"
 
+#include <typeinfo>
 #include <limits>
 
 
 int main(int argc, char* argv[]) {
-
 
     for(int i = 0; i < argc; ++i) {
         std::cout << argv[i] << std::endl;
@@ -56,6 +58,11 @@ int main(int argc, char* argv[]) {
 
         //myNode.joinGroup("localhost", argv[2]);
         Communication::ClientSocket clientSock(Communication::Constants::ipVersion::IPv6);
+        Communication::ServerSocket serverSock(Communication::Constants::ipVersion::IPv6, 2500);
+
+
+
+
         clientSock.connect("localhost", std::string(argv[2]));
         auto msg = std::unique_ptr<char>(new char[128]);
         do {

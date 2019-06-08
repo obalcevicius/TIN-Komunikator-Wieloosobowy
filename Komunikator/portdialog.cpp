@@ -25,3 +25,11 @@ Communication::Constants::ipVersion PortDialog::getIPVersion() const {
         return Communication::Constants::ipVersion::IPv6;
     }
 }
+
+void PortDialog::on_buttonBox_accepted() {
+    qDebug("accepted");
+}
+
+void PortDialog::on_PortDialog_rejected() {
+    QCoreApplication::quit();
+}

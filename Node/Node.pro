@@ -9,13 +9,11 @@ QMAKE_CXXFLAGS += -std=c++17
 SOURCES += \
         main.cpp \
         node.cpp \
-        nodegroup.cpp \
         nodeinfo.cpp
 
 
 HEADERS += \ \
     node.h \
-    nodegroup.h \
     nodeinfo.h
 
 

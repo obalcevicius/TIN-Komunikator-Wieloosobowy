@@ -1,7 +1,7 @@
 #include "nodeinfo.h"
 
 NodeInfo::NodeInfo() {}
-NodeInfo::NodeInfo(std::string t_ipAddress, std::string t_port) :
+NodeInfo::NodeInfo(const std::string& t_ipAddress, const std::string& t_port) :
     m_ipAddress(t_ipAddress),
     m_port(t_port) {}
 

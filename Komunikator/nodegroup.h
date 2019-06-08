@@ -10,8 +10,9 @@ class NodeGroup
 {
 public:
     NodeGroup();
-    void addMember(NodeInfo t_member);
-    void removeMember(NodeInfo t_member);
+    void addMember(const NodeInfo&);
+    void removeMember(const NodeInfo&);
+    bool isMember(const NodeInfo&) const;
     const std::set<NodeInfo>& getMembers() const;
     enum class GroupType {
         Subscriber,

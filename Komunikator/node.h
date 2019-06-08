@@ -21,17 +21,21 @@ public:
     explicit Node(QObject *parent = nullptr);
     void startListening();
     void joinGroup(std::string t_ipAddress, std::string t_port);
-    bool isMember(const NodeInfo&);
-    bool isSubscriber(const NodeInfo&);
+    const std::set<NodeInfo>& getGroup(NodeGroup::GroupType) const;
+    void setController(Controller* t_controller);
+    bool isMember() const;
+    bool isSubscriber() const;
 
 
 signals:
 
 public slots:
     void startServer(unsigned short, Communication::Constants::ipVersion);
-    void setGroup(const std::set<NodeInfo>&, const std::string&);
-    void addNode(const NodeInfo&, const std::string&);
-    void removeNode(const NodeInfo&, const std::string&);
+    unsigned short getListeningPort() const;
+    void setGroup(const std::set<NodeInfo>&, std::string);
+    void addNode(const NodeInfo&, std::string);
+    void removeNode(const NodeInfo&, std::string);
+    void listMembers();
     void broadcastMessage(const Communication::Message&) const;
 
 
@@ -45,8 +49,11 @@ private:
     std::unique_ptr<Communication::ServerSocket> m_server;
     std::thread m_acceptingThread;
     Controller* m_controller;
-    mutable NodeGroup m_subscribers;
-    mutable NodeGroup m_members;
+    NodeGroup m_subscribers;
+    NodeGroup m_members;
+    bool m_isMember;
+    bool m_isSubscriber;
+
 };
 
 #endif // NODE_H

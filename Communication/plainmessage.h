@@ -28,7 +28,7 @@ public:
      * @param t_data buffer containg message data
      * @param t_length length of t_data buffer
      */
-    PlainMessage(std::unique_ptr<char> t_data, unsigned int t_length);
+    PlainMessage(std::unique_ptr<char[]> t_data, unsigned int t_length);
     PlainMessage(const PlainMessage&) = delete;
     PlainMessage& operator=(const PlainMessage&) = delete;
     /**
@@ -61,7 +61,7 @@ public:
 private:
     void prepareHeader();
     std::string m_header;
-    std::unique_ptr<char> m_buffer;
+    std::unique_ptr<char[]> m_buffer;
     unsigned int m_length;
 
 };

@@ -2,8 +2,7 @@ TEMPLATE = subdirs
 
 SUBDIRS += \
     Communication \
-    Komunikator \
-    Node
+    Komunikator
 
 Node.subdir = Node
 Communication.subdir = Communication

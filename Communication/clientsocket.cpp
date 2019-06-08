@@ -41,8 +41,7 @@ void ClientSocket::connect(std::string t_serverAddress, std::string t_serverPort
         case ETIMEDOUT : throw std::runtime_error("Connection timeout");
         case ECONNREFUSED : throw std::runtime_error("Connection refused");
         case ENETUNREACH : throw std::runtime_error("Network is unreachable");
-        default: std::cout << errno << std::endl;
-            throw std::runtime_error("Connection couldn't be established");
+        default: throw std::runtime_error("Connection couldn't be established");
         }
     }
     else {

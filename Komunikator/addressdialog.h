@@ -18,6 +18,11 @@ public:
 
     std::string getIPAddress() const;
     std::string getPortNumber() const;
+signals:
+    void groupJoinRequest(std::string, std::string);
+
+private slots:
+    void on_buttonBox_accepted();
 
 private:
     Ui::AddressDialog *ui;

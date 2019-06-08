@@ -23,9 +23,6 @@ SOURCES += \
         socket.cpp \
 
 
-
-
-
 HEADERS += \
         clientsocket.h \
         commandmessage.h \
@@ -39,7 +36,6 @@ HEADERS += \
         plainmessage.h \
         serversocket.h \
         socket.h \
-
 
 unix {
     target.path = /usr/lib

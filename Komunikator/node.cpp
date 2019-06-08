@@ -1,3 +1,7 @@
+#include <QMessageBox>
+#include <QMetaType>
+#include <QString>
+
 #include <utility>
 
 #include "clientsocket.h"
@@ -6,47 +10,62 @@
 #include "constants.h"
 
 
+
 using sendResult = std::pair<NodeInfo, bool> ;
 
-Node::Node(QObject *parent) : QObject(parent)
+Node::Node(QObject *parent) : QObject(parent), m_isMember(false), m_isSubscriber(false)
 {
-    addNode(NodeInfo("127.0.0.1", "2500"), "member");
-    addNode(NodeInfo("127.0.0.1", "2501"), "member");
-    addNode(NodeInfo("127.0.0.1", "2502"), "member");
 
-
+    //addNode(NodeInfo("127.0.0.1", "2504"), "member");
+    //addNode(NodeInfo("127.0.0.1", "2501"), "member");
+    //addNode(NodeInfo("127.0.0.1", "2505"), "member");
 }
 
 void Node::startServer(unsigned short t_port, Communication::Constants::ipVersion t_version) {
-    m_server = std::make_unique<Communication::ServerSocket>(t_version, t_port);
-    m_server->listen();
+    try {
+        m_server = std::make_unique<Communication::ServerSocket>(t_version, t_port);
+        m_server->listen();
 
-    m_acceptingThread = std::thread(&Node::acceptConnections, this);
-    m_acceptingThread.detach();
+        m_acceptingThread = std::thread(&Node::acceptConnections, this);
+        m_acceptingThread.detach();
+    }
+    catch(std::runtime_error ex) {
+        std::string errorString("Could not start server.\n");
+        errorString.append(ex.what());
+        QMessageBox::critical(nullptr, tr("Fatal Error"), errorString.c_str());
+
+        QCoreApplication::quit();
+    }
+
 }
 
 void Node::acceptConnections() {
     while(true) {
-        std::cout << "START accept";
         Communication::Socket newConnection = m_server->accept();
         auto parsingThread(std::thread(&Node::parseConnection, this, std::move(newConnection)));
         parsingThread.detach();
-        //parseConnection(std::move(newConnection));
     }
+}
+bool Node::isMember() const {
+    return m_isMember;
+}
+bool Node::isSubscriber() const {
+    return m_isSubscriber;
 }
 
 void Node::parseConnection(Communication::Socket t_socket) {
-    while(true) {
-        std::cout << "START CONNECTION";
-        auto newBuffer = t_socket.readMessage();
-
-        auto newMessage = newBuffer->getMessage();
-        MessageController controller_(this, std::move(t_socket));
-        newMessage->accept(*m_controller);
-    }
+    auto newBuffer = t_socket.readMessage();
+    auto newMessage = newBuffer->getMessage();
+    MessageController controller_(this, std::move(t_socket), m_controller);
+    //QMessageBox::information(nullptr, tr("INFO"), tr("new conenction"));
+    newMessage->accept(controller_);
 }
 
-void Node::setGroup(const std::set<NodeInfo>& t_group, const std::string& t_type) {
+void Node::setController(Controller* t_controller) {
+    m_controller = t_controller;
+}
+
+void Node::setGroup(const std::set<NodeInfo>& t_group, std::string t_type) {
     if(!t_type.compare("members")) {
         for(const auto& member_ : t_group) {
             m_members.addMember(member_);
@@ -59,21 +78,9 @@ void Node::setGroup(const std::set<NodeInfo>& t_group, const std::string& t_type
     }
 }
 
-bool Node::isMember(const NodeInfo & t_node) {
-    if(auto it = m_members.getMembers().find(t_node); it != m_members.getMembers().end()) {
-        return true;
-    }
-    return false;
-}
-bool Node::isSubscriber(const NodeInfo &t_node) {
-    if(auto it = m_subscribers.getMembers().find(t_node); it != m_subscribers.getMembers().end()) {
-        return true;
-    }
-    return false;
-}
 
-void Node::addNode(const NodeInfo& t_node, const std::string& t_type) {
-    qDebug("hello");
+
+void Node::addNode(const NodeInfo& t_node, std::string t_type) {
     if(!t_type.compare("member")) {
         m_members.addMember(t_node);
     }
@@ -81,7 +88,7 @@ void Node::addNode(const NodeInfo& t_node, const std::string& t_type) {
         m_subscribers.addMember(t_node);
     }
 }
-void Node::removeNode(const NodeInfo& t_node, const std::string& t_type) {
+void Node::removeNode(const NodeInfo& t_node, std::string t_type) {
     if(!t_type.compare("member")) {
         m_members.removeMember(t_node);
     }
@@ -90,14 +97,24 @@ void Node::removeNode(const NodeInfo& t_node, const std::string& t_type) {
     }
 }
 
+const std::set<NodeInfo>& Node::getGroup(NodeGroup::GroupType t_type) const {
+    switch (t_type) {
+    case NodeGroup::GroupType::Member:
+        return m_members.getMembers();
+    case NodeGroup::GroupType::Subscriber:
+        return m_subscribers.getMembers();
+    }
+}
+
+unsigned short Node::getListeningPort() const {
+    return m_server->getPort();
+}
+
 void Node::broadcastMessage(const Communication::Message& t_msg) const {
     std::vector<std::thread> threads_;
-    qDebug("broadcast");
-    std::cout << m_members.getMembers().size();
     //std::vector<std::promise<sendResult>> vals_;
     //std::vector<std::future<sendResult>> returnValue;
     for(const auto& member_ : m_members.getMembers()) {
-        qDebug("thread");
         threads_.push_back(std::thread(&Node::sendMessage, const_cast<Node*>(this), member_, std::ref(t_msg)));
     }
 
@@ -107,11 +124,18 @@ void Node::broadcastMessage(const Communication::Message& t_msg) const {
 }
 
 void Node::sendMessage(const NodeInfo& t_node, const Communication::Message& t_msg) {
-    qDebug("thread send");
 
     Communication::ClientSocket socket(Communication::Constants::ipVersion::IPv4);
     socket.connect(t_node.getIPAddress(), t_node.getPort());
     socket.sendMessage(t_msg.serialize());
+}
 
+void Node::listMembers() {
+    std::string members;
+
+    for(const auto& member_ : m_members.getMembers()) {
+        members.append(member_.getIPAddress() + " " + member_.getPort() + "\n");
+    }
+    QMessageBox::information(nullptr, "MEMBERS", members.c_str());
 }
 

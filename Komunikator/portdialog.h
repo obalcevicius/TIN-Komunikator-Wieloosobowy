@@ -19,6 +19,11 @@ public:
     Communication::Constants::ipVersion getIPVersion() const;
 
 
+private slots:
+    void on_buttonBox_accepted();
+
+    void on_PortDialog_rejected();
+
 private:
     Ui::PortDialog *ui;
 };

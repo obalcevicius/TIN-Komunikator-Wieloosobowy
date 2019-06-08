@@ -4,6 +4,8 @@
 #include <exception>
 #include <iostream>
 #include <sstream>
+#include <typeinfo>
+
 
 #include "constants.h"
 #include "socket.h"
@@ -29,8 +31,7 @@ Socket::Socket(int t_sockfd) : m_sockfd(t_sockfd) {
 
 }
 
-Socket::Socket(Socket&& rhs) :
-    m_sockfd(rhs.m_sockfd)
+Socket::Socket(Socket&& rhs) :  m_sockfd(rhs.m_sockfd)
 {
     rhs.m_sockfd = -1;
 }
@@ -44,10 +45,9 @@ void Socket::close() {
     }
 }
 
-void Socket::send(const char* t_buffer, size_t t_length) {
+void Socket::send(const char* t_buffer, size_t t_length) const{
     size_t offset = 0;
     long sValue;
-    std::cout << std::string(t_buffer, t_length) <<std::endl;
     while(offset != t_length) {
         sValue = ::send(getSocketFD(), t_buffer + offset, t_length-offset, 0);
         if(sValue == -1 ) {
@@ -69,7 +69,7 @@ void Socket::receive(char* t_buffer, size_t t_length) {
     }
 }
 
-void Socket::sendMessage(const PlainMessage &t_message) {
+void Socket::sendMessage(const PlainMessage &t_message) const {
     send(t_message.getMessageHeader(), Constants::headerSize);
     send(t_message.getMessageBody(), t_message.getMessageLength());
 }
@@ -84,15 +84,35 @@ std::unique_ptr<PlainMessage> Socket::readMessage() {
     int messageType;
     messageHeader >> messageSize >> messageType;
     unsigned long int messageLength = messageSize.to_ulong();
-    messageLength = ntohl(messageLength);
 
-    std::cout << messageLength << " " << messageType << std::endl;
-    auto msg_body = std::unique_ptr<char>(new char[messageLength]);
+    messageLength = ntohl(messageLength);
+    auto msg_body = std::make_unique<char[]>(messageLength);
+
     receive(msg_body.get(), messageLength);
-    auto msgBody = std::unique_ptr<PlainMessage>( new PlainMessage(std::move(msg_body), messageLength));
-    std::cout << "END READ\n";
+    auto msgBody = std::make_unique<PlainMessage>(std::move(msg_body), messageLength);
 
     return msgBody;
+}
+
+std::string Socket::getIPAddress() const {
+    int s;
+    struct sockaddr_storage address;
+    socklen_t length = sizeof(address);
+
+    s =  getsockname(getSocketFD(), reinterpret_cast<struct sockaddr*>(&address), &length);
+    if(s == 0) {
+        if(address.ss_family == AF_INET6) {
+            char addr[INET6_ADDRSTRLEN];
+            inet_ntop(AF_INET6, &reinterpret_cast<struct sockaddr_in6*>(&address)->sin6_addr.s6_addr, addr, INET6_ADDRSTRLEN);
+            return std::string(addr);
+        }
+        else if(address.ss_family == AF_INET) {
+            char addr[INET_ADDRSTRLEN];
+            inet_ntop(AF_INET, &reinterpret_cast<struct sockaddr_in*>(&address)->sin_addr, addr, INET_ADDRSTRLEN);
+            return std::string(addr);
+        }
+    }
+    return "";
 }
 
 int Socket::getSocketFD() const {

@@ -62,6 +62,7 @@ void GroupMembersMessage::deserialize(const PlainMessage &t_message) {
     }
     messageStream >> m_command >> m_groupType >> groupCount;
     for (int i = 0; i < groupCount; ++i) {
+
         std::string ipAddress, port;
         messageStream >> ipAddress >> port;
         m_group.insert(NodeInfo(ipAddress, port));

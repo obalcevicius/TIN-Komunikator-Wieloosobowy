@@ -43,6 +43,46 @@
      <string>Leave Group</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="listMembersButton">
+    <property name="geometry">
+     <rect>
+      <x>210</x>
+      <y>20</y>
+      <width>141</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>List Group Members</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="broadcastMessageButton">
+    <property name="geometry">
+     <rect>
+      <x>170</x>
+      <y>50</y>
+      <width>181</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>broadcast Message</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>80</x>
+      <y>10</y>
+      <width>131</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Temporary buttons  
+ for testing</string>
+    </property>
+   </widget>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>

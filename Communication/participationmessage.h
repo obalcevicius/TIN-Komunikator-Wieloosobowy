@@ -3,7 +3,7 @@
 
 #include "constants.h"
 #include "message.h"
-#include "../Node/nodeinfo.h"
+#include "../Komunikator/nodeinfo.h"
 
 namespace Communication {
 

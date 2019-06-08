@@ -13,13 +13,13 @@ namespace Communication {
 
 
 PlainMessage::PlainMessage(const std::string& t_data) {
-    m_buffer = std::unique_ptr<char>(new char[t_data.size()]);
+    m_buffer = std::make_unique<char[]>(t_data.size());
     std::memcpy(m_buffer.get(), t_data.data(), t_data.size());
     m_length = t_data.size();
     prepareHeader();
 }
 
-PlainMessage::PlainMessage(std::unique_ptr<char> t_data, unsigned int t_length) :
+PlainMessage::PlainMessage(std::unique_ptr<char[]> t_data, unsigned int t_length) :
     m_buffer(std::move(t_data)),
     m_length(t_length)
 {

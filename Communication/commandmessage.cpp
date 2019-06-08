@@ -19,7 +19,6 @@ CommandMessage::CommandMessage(std::string t_command, int t_info) :
     m_command(t_command),
     m_info(t_info)
 {
-    std::cout <<t_command.size();
 
 }
 
