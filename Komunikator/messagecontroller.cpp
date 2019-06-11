@@ -12,12 +12,13 @@ MessageController::MessageController(Node* t_node, Communication::Socket t_socke
     connect(this, SIGNAL(setGroup(const std::set<NodeInfo>&, const std::string&)), t_node, SLOT(setGroup(const std::set<NodeInfo>&, const std::string&)), Qt::QueuedConnection);
     //connect(this, SIGNAL(broadcastMessage(const Communication::Message&)), t_node, SLOT(broadcastMessage(const Communication::Message&)), Qt::QueuedConnection);
     connect(this, SIGNAL(showResponse(const std::string&, const std::string&)), t_controller, SLOT(showResponse(const std::string&, const std::string&)),Qt::QueuedConnection);
+    connect(this, SIGNAL(receivedMessage(const std::string&)), t_controller, SLOT(receivedMessage(const std::string&)),Qt::QueuedConnection);
+
 }
 
 
 void MessageController::visit(const Communication::ParticipationMessage& t_message) const {
     qDebug("received participation message");
-    std::cout << t_message.getCommand() <<" " <<t_message.getNodeInfo().getPort() <<"\n";
     if(!t_message.getCommand().compare("subscribe")) {
     }
     else if(!t_message.getCommand().compare("unsubscribe")) {
@@ -29,7 +30,6 @@ void MessageController::visit(const Communication::ParticipationMessage& t_messa
         m_node->broadcastMessage(msg_);
 
         auto members = m_node->getGroup(NodeGroup::GroupType::Member);
-        std::cout << m_socket.getIPAddress() << " \n";
         members.insert(NodeInfo(m_socket.getIPAddress(), std::to_string(m_node->getListeningPort())));
 
         auto subscribers = m_node->getGroup(NodeGroup::GroupType::Subscriber);
@@ -71,8 +71,7 @@ void MessageController::visit(const Communication::ParticipationMessage& t_messa
 
 
 void MessageController::visit(const Communication::CommandMessage& t_message) const {
-    std::cout << "RECEIVED MESSAGE: " << t_message.getCommand() << std::endl;
-
+    emit receivedMessage(t_message.getCommand());
 }
 
 void MessageController::visit(const Communication::EchoMessage& t_message) const {

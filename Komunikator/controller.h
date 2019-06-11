@@ -29,6 +29,7 @@ signals:
     void setGroup(const std::set<NodeInfo>&, std::string) const;
     void showMessageBox(const std::string&, const std::string&) const;
     void broadcastMessage(const Communication::Message*) const;
+    void showCommand(const std::string& t_command) const;
 public slots:
 
     void quit();
@@ -37,6 +38,7 @@ public slots:
     void startNode(unsigned short, Communication::Constants::ipVersion);
     void leaveGroup();
     void broadcastMessage(const std::string&);
+    void receivedMessage(const std::string&);
 
 private:
     void joinGroup(const std::string&, const std::string&);

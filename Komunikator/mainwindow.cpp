@@ -22,6 +22,7 @@ MainWindow::MainWindow(Controller &controller, Node& t_node, QWidget *parent) :
     connect(&portDialog, SIGNAL(setPort(unsigned short, Communication::Constants::ipVersion)), &controller, SLOT(startNode(unsigned short, Communication::Constants::ipVersion)));
     connect(&portDialog, SIGNAL(setUI(const std::string&, Communication::Constants::ipVersion)), this, SLOT(setUI(const std::string&, Communication::Constants::ipVersion)));
     connect(&controller, SIGNAL(showMessageBox(const std::string&, const std::string&)), this, SLOT(showMessageBox(const std::string&, const std::string&)));
+    connect(&controller, SIGNAL(showCommand(const std::string&)), this, SLOT(showCommand(const std::string&)));
     connect(this, SIGNAL(quit()), &controller, SLOT(quit()));
     connect(this, SIGNAL(listMembersUI()), &t_node, SLOT(listMembers()));
 
@@ -58,6 +59,10 @@ void MainWindow::on_leaveGroupButton_clicked() {
         emit leaveGroup();
     }
 
+}
+
+void MainWindow::showCommand(const std::string& t_command) {
+    QMessageBox::information(this, "Received Message", t_command.c_str());
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)

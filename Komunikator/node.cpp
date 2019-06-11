@@ -97,10 +97,7 @@ void Node::addNode(const NodeInfo& t_node, std::string t_type) {
 }
 void Node::removeNode(const NodeInfo& t_node, std::string t_type) {
     if(!t_type.compare("member")) {
-        std::cout << m_members.getMembers().size() << "\n";
         m_members.removeMember(t_node);
-        std::cout << m_members.getMembers().size() << "\n";
-
     }
     else if(!t_type.compare("subscriber")) {
         m_subscribers.removeMember(t_node);

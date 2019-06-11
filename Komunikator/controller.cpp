@@ -30,7 +30,6 @@ void Controller::groupJoinRequest(std::string t_ipAddress, std::string t_portNum
 void Controller::joinGroup(const std::string& t_ip,const std::string& t_port) {
     using Communication::ParticipationMessage;
     Communication::ClientSocket client;
-    std::cout << "START JOIN\n";
     try {
         if(Communication::Constants::isIPv6Address(t_ip)) {
             client = Communication::ClientSocket(Communication::Constants::ipVersion::IPv6);
@@ -75,6 +74,13 @@ void Controller::quit() {
 
     QApplication::quit();
 }
+
+void Controller::receivedMessage(const std::string& t_command) {
+    emit showCommand(t_command);
+}
+
+
+
 
 void Controller::leaveGroup() {
     using Communication::ParticipationMessage;

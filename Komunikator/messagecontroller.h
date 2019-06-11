@@ -29,6 +29,7 @@ signals:
     void broadcastMessage(const Communication::Message&) const;
     void joinResponse(const std::string&) const;
     void removeNode(const NodeInfo&, const std::string&) const;
+    void receivedMessage(const std::string&) const ;
     void setGroup(const std::set<NodeInfo>&, const std::string&) const;
     void showResponse(const std::string&, const std::string&) const;
 

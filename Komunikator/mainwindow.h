@@ -42,6 +42,7 @@ private slots:
     void on_leaveGroupButton_clicked();
     void on_listMembersButton_clicked();
     void on_broadcastMessageButton_clicked();
+    void showCommand(const std::string&);
 
 private:
     Ui::MainWindow *ui;
