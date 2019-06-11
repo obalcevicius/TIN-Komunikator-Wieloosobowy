@@ -16,8 +16,18 @@ namespace Communication {
 class ClientSocket : public Socket
 {
 public:
+    ClientSocket();
     ClientSocket(Constants::ipVersion t_ipVersion);
+
+    ClientSocket(const ClientSocket&) = delete;
+    ClientSocket& operator=(const ClientSocket&) = delete;
+
+
+    ClientSocket(ClientSocket&&);
+    ClientSocket& operator=(ClientSocket&&);
+
     ~ClientSocket() override;
+
     /**
      * @brief Connects to specified server
      * @param t_ipAddress IP address of server to connect to

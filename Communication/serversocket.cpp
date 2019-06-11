@@ -41,6 +41,7 @@ ServerSocket::ServerSocket(Constants::ipVersion t_ipVersion, unsigned short t_po
 }
 
 ServerSocket::~ServerSocket() {
+    //close();
 
 }
 

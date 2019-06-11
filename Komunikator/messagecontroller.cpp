@@ -17,18 +17,19 @@ MessageController::MessageController(Node* t_node, Communication::Socket t_socke
 
 void MessageController::visit(const Communication::ParticipationMessage& t_message) const {
     qDebug("received participation message");
+    std::cout << t_message.getCommand() <<" " <<t_message.getNodeInfo().getPort() <<"\n";
     if(!t_message.getCommand().compare("subscribe")) {
     }
     else if(!t_message.getCommand().compare("unsubscribe")) {
     }
     else if(!t_message.getCommand().compare("join")) {
 
-        qDebug("join request received");
         Communication::ParticipationMessage msg_(NodeInfo(t_message.getNodeInfo().getIPAddress(), t_message.getNodeInfo().getPort()),
                                             "add", "member");
         m_node->broadcastMessage(msg_);
 
         auto members = m_node->getGroup(NodeGroup::GroupType::Member);
+        std::cout << m_socket.getIPAddress() << " \n";
         members.insert(NodeInfo(m_socket.getIPAddress(), std::to_string(m_node->getListeningPort())));
 
         auto subscribers = m_node->getGroup(NodeGroup::GroupType::Subscriber);
@@ -40,11 +41,13 @@ void MessageController::visit(const Communication::ParticipationMessage& t_messa
         m_socket.sendMessage(subMessage.serialize());
 
         m_node->addNode(t_message.getNodeInfo(), "member");
-
-        qDebug("join request parsed");
     }
     else if(!t_message.getCommand().compare("leave")) {
-        //broadcast
+        m_node->removeNode(t_message.getNodeInfo(), "member");
+
+        Communication::ParticipationMessage msg_(NodeInfo(t_message.getNodeInfo().getIPAddress(), t_message.getNodeInfo().getPort()),
+                                                 "remove", "member");
+        m_node->broadcastMessage(msg_);
 
     }
     else if(!t_message.getCommand().compare("add")) {
@@ -57,7 +60,7 @@ void MessageController::visit(const Communication::ParticipationMessage& t_messa
     }
     else if(!t_message.getCommand().compare("remove")) {
         if(!t_message.getGroup().compare("member")) {
-            emit addNode(t_message.getNodeInfo(), "member");
+            m_node->removeNode(t_message.getNodeInfo(), "member");
         }
         else if(!t_message.getGroup().compare("subscriber")) {
             emit addNode(t_message.getNodeInfo(), "subscriber");
@@ -80,8 +83,6 @@ void MessageController::visit(const Communication::EchoMessage& t_message) const
 void MessageController::visit(const Communication::GroupMembersMessage& t_message) const {
     qDebug("received group message");
     if(!t_message.getCommand().compare("accepted")) {
-        for(const auto& tmp_ : t_message.getGroup()) {
-        }
         emit setGroup(t_message.getGroup(), t_message.getGroupType());
     }
     std::string response("Request to join ");

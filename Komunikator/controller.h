@@ -25,20 +25,21 @@ public:
 
 signals:
     void startListening(unsigned short, Communication::Constants::ipVersion);
+    void resetGroup();
     void setGroup(const std::set<NodeInfo>&, std::string) const;
     void showMessageBox(const std::string&, const std::string&) const;
     void broadcastMessage(const Communication::Message*) const;
 public slots:
 
+    void quit();
     void showResponse(const std::string&, const std::string&);
     void groupJoinRequest(std::string, std::string);
-    void startNode();
+    void startNode(unsigned short, Communication::Constants::ipVersion);
     void leaveGroup();
     void broadcastMessage(const std::string&);
 
 private:
     void joinGroup(const std::string&, const std::string&);
-    PortDialog m_portDialog;
     Node* m_node;
     unsigned short m_port;
 

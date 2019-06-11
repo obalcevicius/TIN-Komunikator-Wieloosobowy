@@ -1,3 +1,5 @@
+#include <QMessageBox>
+
 #include "portdialog.h"
 #include "ui_portdialog.h"
 
@@ -14,7 +16,7 @@ PortDialog::~PortDialog()
 }
 
 unsigned short PortDialog::getPort() const {
-    return ui->lineEdit->text().toUShort();
+    return ui->portLine->text().toUShort();
 }
 
 Communication::Constants::ipVersion PortDialog::getIPVersion() const {
@@ -27,7 +29,13 @@ Communication::Constants::ipVersion PortDialog::getIPVersion() const {
 }
 
 void PortDialog::on_buttonBox_accepted() {
-    qDebug("accepted");
+    std::string port = ui->portLine->text().toStdString();
+    if(!port.empty() && std::find_if(port.begin(), port.end(), [](char c){return !std::isdigit(c); }) != port.end()) {
+        QMessageBox::critical(this, tr("Error"), tr("Wrong Port"));
+        QCoreApplication::quit();
+    }
+    emit setPort(getPort(), getIPVersion());
+    emit setUI(port, getIPVersion());
 }
 
 void PortDialog::on_PortDialog_rejected() {

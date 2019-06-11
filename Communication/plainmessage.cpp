@@ -2,6 +2,7 @@
 #include <bitset>
 #include <cstring>
 #include <iostream>
+#include <string>
 #include <sstream>
 
 
@@ -16,12 +17,14 @@ PlainMessage::PlainMessage(const std::string& t_data) {
     m_buffer = std::make_unique<char[]>(t_data.size());
     std::memcpy(m_buffer.get(), t_data.data(), t_data.size());
     m_length = t_data.size();
+    m_messageType = std::stoi(t_data);
     prepareHeader();
 }
 
-PlainMessage::PlainMessage(std::unique_ptr<char[]> t_data, unsigned int t_length) :
+PlainMessage::PlainMessage(std::unique_ptr<char[]> t_data, unsigned int t_length, int t_messageType) :
     m_buffer(std::move(t_data)),
-    m_length(t_length)
+    m_length(t_length),
+    m_messageType(t_messageType)
 {
     prepareHeader();
 
@@ -34,7 +37,8 @@ PlainMessage::~PlainMessage() {
 PlainMessage::PlainMessage(PlainMessage&& rhs) :
     m_header(rhs.m_header),
     m_buffer(std::move(rhs.m_buffer)),
-    m_length(rhs.m_length)
+    m_length(rhs.m_length),
+    m_messageType(rhs.m_messageType)
 {
 
 }
@@ -42,7 +46,7 @@ PlainMessage::PlainMessage(PlainMessage&& rhs) :
 
 int PlainMessage::getMessageType() const {
     if(m_buffer != nullptr) {
-        return m_buffer.get()[0] - '0';
+        return m_messageType;
     }
     return Constants::incorrectHeader;
 }
@@ -78,8 +82,10 @@ std::unique_ptr<Message> PlainMessage::getMessage() const {
             m->deserialize(*this);
             return std::unique_ptr<Message>(m);
         }
+        throw std::runtime_error("GETMESSAGE IF");
 
     }
+    throw  std::runtime_error("GETMESSAGE FUNC");
     return std::unique_ptr<Message>(nullptr);
 }
 

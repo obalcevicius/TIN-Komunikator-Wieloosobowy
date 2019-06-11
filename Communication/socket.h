@@ -20,11 +20,17 @@ public:
     /**
      * @brief Initializes and open socket
      */
+    Socket();
     Socket(Constants::ipVersion t_ipVersion);
     Socket(int t_sockfd);
-    Socket(Socket&&);
-    virtual ~Socket();
+
+    Socket(const Socket&) = delete;
     Socket& operator=(const Socket&) = delete;
+
+    Socket(Socket&&);
+    Socket& operator=(Socket&&);
+    virtual ~Socket();
+
 
     /**
      * @brief Send data from buffer to socket
@@ -62,7 +68,7 @@ public:
      * @return String representation of i.p. address
      */
     std::string getIPAddress() const;
-private:
+protected:
     int m_sockfd;
 };
 

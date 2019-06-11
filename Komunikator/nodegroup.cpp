@@ -12,7 +12,13 @@ void NodeGroup::addMember(const NodeInfo& t_member) {
 
 void NodeGroup::removeMember(const NodeInfo& t_member) {
     std::lock_guard<std::mutex> lc(m_lock);
-    m_members.erase(t_member);
+    for(auto it = m_members.begin(); it != m_members.end(); ++it) {
+        if(it->getIPAddress() == t_member.getIPAddress() && it->getPort() == t_member.getPort()) {
+            m_members.erase(it);
+            return;
+        }
+    }
+
 }
 
 const std::set<NodeInfo>& NodeGroup::getMembers() const {
@@ -25,9 +31,8 @@ bool NodeGroup::isMember(const NodeInfo& t_node) const {
     }
     return false;
 }
-//bool NodeGroup::isSubscriber(const NodeInfo &t_node) {
-//    if(auto it = m_subscribers.getMembers().find(t_node); it != m_subscribers.getMembers().end()) {
-//        return true;
-//    }
-//    return false;
-//}
+
+void NodeGroup::clear() {
+     std::lock_guard<std::mutex> lc(m_lock);
+     m_members.clear();
+}

@@ -17,7 +17,9 @@ public:
     ~PortDialog();
     unsigned short getPort() const;
     Communication::Constants::ipVersion getIPVersion() const;
-
+signals:
+    void setPort(unsigned short, Communication::Constants::ipVersion) const;
+    void setUI(const std::string&, Communication::Constants::ipVersion) const;
 
 private slots:
     void on_buttonBox_accepted();

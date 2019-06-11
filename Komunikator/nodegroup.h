@@ -14,6 +14,7 @@ public:
     void removeMember(const NodeInfo&);
     bool isMember(const NodeInfo&) const;
     const std::set<NodeInfo>& getMembers() const;
+    void clear();
     enum class GroupType {
         Subscriber,
         Member

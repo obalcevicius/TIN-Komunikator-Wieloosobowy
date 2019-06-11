@@ -13,20 +13,20 @@
 
 namespace Communication {
 
+Socket::Socket() {};
+
 Socket::Socket(Constants::ipVersion t_ipVersion) {
     if(t_ipVersion == Constants::ipVersion::IPv4) {
-        std::cout << "CREATING IPv4 SOCKET\n";
         m_sockfd = socket(PF_INET, SOCK_STREAM, 0);
     }
     else if(t_ipVersion == Constants::ipVersion::IPv6) {
-         std::cout << "CREATING IPv6 SOCKET\n";
         m_sockfd = socket(PF_INET6, SOCK_STREAM, 0);
     }
-
     if(m_sockfd == -1) {
         throw std::runtime_error("Couldn't create socket");
     }
 }
+
 Socket::Socket(int t_sockfd) : m_sockfd(t_sockfd) {
 
 }
@@ -35,6 +35,13 @@ Socket::Socket(Socket&& rhs) :  m_sockfd(rhs.m_sockfd)
 {
     rhs.m_sockfd = -1;
 }
+
+Socket& Socket::operator=(Socket&& rhs) {
+    m_sockfd = rhs.m_sockfd;
+    rhs.m_sockfd = -1;
+    return *this;
+}
+
 
 Socket::~Socket() {
     close();
@@ -58,14 +65,14 @@ void Socket::send(const char* t_buffer, size_t t_length) const{
 }
 
 void Socket::receive(char* t_buffer, size_t t_length) {
-    long bytesLeft = static_cast<long>(t_length);
+    size_t offset = 0;
     long bytesRead;
-    while(bytesLeft > 0) {
-        bytesRead = ::recv(getSocketFD(),t_buffer, t_length, 0);
+    while(offset != t_length) {
+        bytesRead = ::recv(getSocketFD(),t_buffer+offset, t_length-offset, 0);
         if(bytesRead == -1) {
             throw std::runtime_error("Couln't read message");
         }
-        bytesLeft -= bytesRead;
+        offset +=  static_cast<unsigned long>(bytesRead);
     }
 }
 
@@ -83,13 +90,14 @@ std::unique_ptr<PlainMessage> Socket::readMessage() {
     std::stringstream messageHeader(headerStr); std::bitset<32> messageSize;
     int messageType;
     messageHeader >> messageSize >> messageType;
+
     unsigned long int messageLength = messageSize.to_ulong();
 
     messageLength = ntohl(messageLength);
     auto msg_body = std::make_unique<char[]>(messageLength);
 
     receive(msg_body.get(), messageLength);
-    auto msgBody = std::make_unique<PlainMessage>(std::move(msg_body), messageLength);
+    auto msgBody = std::make_unique<PlainMessage>(std::move(msg_body), messageLength, messageType);
 
     return msgBody;
 }

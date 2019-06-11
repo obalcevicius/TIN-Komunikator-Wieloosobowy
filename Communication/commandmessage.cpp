@@ -44,11 +44,15 @@ PlainMessage CommandMessage::serialize() const {
     return PlainMessage(body.str());
 }
 void CommandMessage::deserialize(const PlainMessage& t_message)  {
+    std::cout << "HALLLO: " << t_message.getMessageType() << "\n";
     std::string messageString(t_message.getMessageBody(), t_message.getMessageLength());
     std::stringstream messageStream(messageString);
     int messageHeader;
     messageStream >> messageHeader;
+    std::cout << "VALIA \n";
     if(messageHeader != getHeader()) {
+        std::cout << "VALIA \n";
+        std::cout << "TEST SHOULD" << getHeader() << " IS" << messageHeader << std::endl;
         std::cout << "WRONG MESSAGE!: " << messageHeader << std::endl;
         return;
     }

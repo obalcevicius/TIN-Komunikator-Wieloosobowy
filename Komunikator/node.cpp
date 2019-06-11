@@ -16,13 +16,11 @@ using sendResult = std::pair<NodeInfo, bool> ;
 Node::Node(QObject *parent) : QObject(parent), m_isMember(false), m_isSubscriber(false)
 {
 
-    //addNode(NodeInfo("127.0.0.1", "2504"), "member");
-    //addNode(NodeInfo("127.0.0.1", "2501"), "member");
-    //addNode(NodeInfo("127.0.0.1", "2505"), "member");
 }
 
 void Node::startServer(unsigned short t_port, Communication::Constants::ipVersion t_version) {
     try {
+        std::cout << "START SERVER\n";
         m_server = std::make_unique<Communication::ServerSocket>(t_version, t_port);
         m_server->listen();
 
@@ -54,10 +52,9 @@ bool Node::isSubscriber() const {
 }
 
 void Node::parseConnection(Communication::Socket t_socket) {
-    auto newBuffer = t_socket.readMessage();
+    auto newBuffer(t_socket.readMessage());
     auto newMessage = newBuffer->getMessage();
     MessageController controller_(this, std::move(t_socket), m_controller);
-    //QMessageBox::information(nullptr, tr("INFO"), tr("new conenction"));
     newMessage->accept(controller_);
 }
 
@@ -66,6 +63,7 @@ void Node::setController(Controller* t_controller) {
 }
 
 void Node::setGroup(const std::set<NodeInfo>& t_group, std::string t_type) {
+    m_isMember = true;
     if(!t_type.compare("members")) {
         for(const auto& member_ : t_group) {
             m_members.addMember(member_);
@@ -75,13 +73,22 @@ void Node::setGroup(const std::set<NodeInfo>& t_group, std::string t_type) {
         for(const auto& sub_ : t_group) {
             m_subscribers.addMember(sub_);
         }
+
     }
+}
+
+void Node::resetGroup() {
+    m_members.clear();
+    m_subscribers.clear();
+    m_isMember = false;
+    m_isSubscriber = false;
 }
 
 
 
 void Node::addNode(const NodeInfo& t_node, std::string t_type) {
     if(!t_type.compare("member")) {
+        m_isMember = true;
         m_members.addMember(t_node);
     }
     else if(!t_type.compare("subscriber")) {
@@ -90,7 +97,10 @@ void Node::addNode(const NodeInfo& t_node, std::string t_type) {
 }
 void Node::removeNode(const NodeInfo& t_node, std::string t_type) {
     if(!t_type.compare("member")) {
+        std::cout << m_members.getMembers().size() << "\n";
         m_members.removeMember(t_node);
+        std::cout << m_members.getMembers().size() << "\n";
+
     }
     else if(!t_type.compare("subscriber")) {
         m_subscribers.removeMember(t_node);
@@ -104,6 +114,7 @@ const std::set<NodeInfo>& Node::getGroup(NodeGroup::GroupType t_type) const {
     case NodeGroup::GroupType::Subscriber:
         return m_subscribers.getMembers();
     }
+    return std::move(std::set<NodeInfo>());
 }
 
 unsigned short Node::getListeningPort() const {
@@ -112,8 +123,6 @@ unsigned short Node::getListeningPort() const {
 
 void Node::broadcastMessage(const Communication::Message& t_msg) const {
     std::vector<std::thread> threads_;
-    //std::vector<std::promise<sendResult>> vals_;
-    //std::vector<std::future<sendResult>> returnValue;
     for(const auto& member_ : m_members.getMembers()) {
         threads_.push_back(std::thread(&Node::sendMessage, const_cast<Node*>(this), member_, std::ref(t_msg)));
     }
@@ -125,7 +134,7 @@ void Node::broadcastMessage(const Communication::Message& t_msg) const {
 
 void Node::sendMessage(const NodeInfo& t_node, const Communication::Message& t_msg) {
 
-    Communication::ClientSocket socket(Communication::Constants::ipVersion::IPv4);
+    Communication::ClientSocket socket(Communication::Constants::ipVersion::IPv6);
     socket.connect(t_node.getIPAddress(), t_node.getPort());
     socket.sendMessage(t_msg.serialize());
 }

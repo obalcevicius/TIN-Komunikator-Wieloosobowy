@@ -1,6 +1,7 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
+#include <string>
 
 namespace Communication {
 /**
@@ -20,6 +21,8 @@ public:
         IPv4,
         IPv6
     };
+    static bool isIPv4Address(const std::string &);
+    static bool isIPv6Address(const std::string &);
 
 private:
     Constants();

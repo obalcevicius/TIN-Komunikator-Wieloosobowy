@@ -33,6 +33,7 @@ public slots:
     void startServer(unsigned short, Communication::Constants::ipVersion);
     unsigned short getListeningPort() const;
     void setGroup(const std::set<NodeInfo>&, std::string);
+    void resetGroup();
     void addNode(const NodeInfo&, std::string);
     void removeNode(const NodeInfo&, std::string);
     void listMembers();
